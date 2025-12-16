@@ -1419,7 +1419,7 @@
             </div>
             <h2>Program View</h2>
             <p class="subtitle">Vysus Group Resource Management</p>
-            <button class="login-btn" onclick="openLogin()">
+            <button type="button" class="login-btn" onclick="openLogin()">
                 Sign in with Vysus Email
             </button>
             <p class="login-note">Restricted to @vysusgroup.com email addresses</p>
@@ -2716,16 +2716,18 @@
         }
 
         function openLogin() {
+            console.log('openLogin called, IS_LOCAL:', IS_LOCAL);
             if (IS_LOCAL) {
                 document.getElementById('loginOverlay').classList.add('hidden');
                 document.getElementById('userInfo').style.display = 'flex';
                 document.getElementById('userEmail').textContent = 'Local Development';
                 return;
             }
+            console.log('netlifyIdentity available:', !!window.netlifyIdentity);
             if (window.netlifyIdentity) {
                 netlifyIdentity.open('login');
             } else {
-                alert('Authentication service not available. Please try again.');
+                alert('Authentication service not available. Please refresh the page and try again.');
             }
         }
 
