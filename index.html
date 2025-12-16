@@ -1,0 +1,2659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program View - Vysus Group</title>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a2332;
+            --bg-card: #243447;
+            --bg-input: #1a2332;
+            --accent: #00d4aa;
+            --accent-dim: rgba(0, 212, 170, 0.15);
+            --text-primary: #e8eef4;
+            --text-secondary: #8899a6;
+            --text-muted: #657786;
+            --border: #38444d;
+            --warning: #f5a623;
+            --danger: #e0245e;
+            --success: #17bf63;
+            --radar-pulse: #00d4aa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .week-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-secondary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .week-selector input {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover { opacity: 0.85; }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover { background: var(--bg-card); }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background: var(--danger);
+            animation: none;
+        }
+
+        .btn-start-daemon {
+            padding: 4px 12px;
+            font-size: 11px;
+            background: var(--warning);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-start-daemon:hover {
+            opacity: 0.85;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Resource Pool */
+        .resource-pool {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .resource-pool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .resource-pool-header h2 {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .resources-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .resource-chip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            background: var(--bg-card);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: grab;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            min-width: 200px;
+            flex: 0 1 auto;
+        }
+
+        .resource-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
+        }
+
+        .resource-chip.dragging { opacity: 0.4; }
+
+        .resource-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .resource-name {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .resource-hours {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .hours-ok { background: var(--accent-dim); color: var(--accent); }
+        .hours-full { background: rgba(245, 166, 35, 0.2); color: var(--warning); }
+        .hours-over { background: rgba(224, 36, 94, 0.2); color: var(--danger); }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .project-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .project-card:hover { border-color: var(--accent); }
+        .project-card.drag-over {
+            border: 2px dashed var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .project-header {
+            background: var(--bg-card);
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .project-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .project-hours {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .project-body { padding: 16px; }
+
+        .assigned-list {
+            min-height: 60px;
+            margin-bottom: 16px;
+        }
+
+        .assigned-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .assigned-item.over { border-left-color: var(--danger); background: rgba(224, 36, 94, 0.1); }
+        .assigned-item.full { border-left-color: var(--warning); background: rgba(245, 166, 35, 0.1); }
+
+        .assigned-name {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .assigned-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .wanted-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .wanted-toggle input:checked + span { color: var(--warning); }
+
+        .date-input {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            width: 100px;
+        }
+
+        .hour-btn {
+            width: 22px;
+            height: 22px;
+            border: none;
+            border-radius: 4px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .hour-btn:hover { background: var(--accent); color: var(--bg-primary); }
+
+        .hour-input {
+            width: 36px;
+            text-align: center;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 2px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .remove-btn {
+            width: 22px;
+            height: 22px;
+            border: none;
+            border-radius: 4px;
+            background: rgba(224, 36, 94, 0.2);
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* Status Section */
+        .status-section {
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .status-checks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .status-check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .status-check input { accent-color: var(--accent); }
+        .status-check input:checked + span { color: var(--accent); }
+
+        .expected-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .notes-box, .issues-box {
+            margin-top: 10px;
+        }
+
+        .notes-box label, .issues-box label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .notes-box textarea, .issues-box textarea {
+            width: 100%;
+            min-height: 50px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            padding: 10px;
+            font-size: 12px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .notes-box textarea:focus, .issues-box textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .issues-box textarea {
+            border-color: rgba(224, 36, 94, 0.3);
+        }
+
+        .issues-box textarea:focus {
+            border-color: var(--danger);
+        }
+
+        /* Milestones */
+        .milestones-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .milestones-header {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .milestone-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .milestone-num {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .milestone-num.complete {
+            background: var(--success);
+            color: var(--bg-primary);
+        }
+
+        .milestone-num.overdue {
+            background: var(--danger);
+            color: white;
+        }
+
+        .milestone-input {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            min-width: 0;
+        }
+
+        .milestone-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .milestone-date {
+            width: 110px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        .milestone-date.overdue {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .milestone-check {
+            accent-color: var(--success);
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 100px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .calendar-day {
+            min-height: 80px;
+            background: var(--bg-card);
+            border-radius: 6px;
+            padding: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .calendar-day.other-month { opacity: 0.4; }
+        .calendar-day.today { border-color: var(--accent); }
+
+        .calendar-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .calendar-events {
+            font-size: 10px;
+        }
+
+        .calendar-event {
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Summary Panel */
+        .summary-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 24px;
+            display: flex;
+            gap: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .summary-stat {
+            text-align: center;
+        }
+
+        .summary-stat .value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .summary-stat .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .summary-stat.warning .value { color: var(--danger); }
+
+        /* ====================== */
+        /* SALES RADAR STYLES     */
+        /* ====================== */
+        .radar-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .radar-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .radar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .radar-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .radar-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: radar-sweep 3s ease-in-out infinite;
+        }
+
+        @keyframes radar-sweep {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(0, 212, 170, 0); }
+        }
+
+        .radar-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .radar-table th {
+            padding: 12px 16px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .radar-table th:first-child {
+            text-align: left;
+            width: 200px;
+        }
+
+        .radar-table td {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .radar-table td:first-child {
+            text-align: left;
+        }
+
+        .radar-table tr:hover {
+            background: var(--bg-card);
+        }
+
+        .client-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .client-type {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .quarter-cell {
+            min-width: 100px;
+        }
+
+        .pulse-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--radar-pulse);
+            animation: pulse-glow 2s ease-in-out infinite;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .pulse-dot:hover {
+            transform: scale(1.2);
+        }
+
+        .pulse-dot.bess {
+            background: #f5a623;
+        }
+
+        .pulse-dot.solar {
+            background: #ffd93d;
+        }
+
+        .pulse-dot.wind {
+            background: #6bcf7f;
+        }
+
+        .pulse-dot.grid {
+            background: #00d4aa;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.7);
+            }
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 0 8px rgba(0, 212, 170, 0);
+            }
+        }
+
+        .pulse-dot.bess {
+            animation-name: pulse-glow-bess;
+        }
+
+        @keyframes pulse-glow-bess {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.7);
+            }
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 0 8px rgba(245, 166, 35, 0);
+            }
+        }
+
+        /* Notes Panel */
+        .notes-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .notes-panel h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .intel-item {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .intel-item.highlight {
+            border-left-color: var(--warning);
+            background: rgba(245, 166, 35, 0.05);
+        }
+
+        .intel-client {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .intel-text {
+            font-size: 13px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .intel-date {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .intel-source {
+            font-size: 10px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        /* Legend */
+        .radar-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.bess { background: #f5a623; }
+        .legend-dot.solar { background: #ffd93d; }
+        .legend-dot.wind { background: #6bcf7f; }
+        .legend-dot.grid { background: #00d4aa; }
+
+        /* ====================== */
+        /* LOGIN OVERLAY STYLES   */
+        /* ====================== */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-overlay.hidden {
+            display: none;
+        }
+
+        .login-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            color: var(--accent);
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .login-box .subtitle {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 32px;
+        }
+
+        .login-box .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-dim);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .login-box .logo svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--accent);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .login-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .login-note {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-secondary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .user-info .user-email {
+            font-size: 12px;
+            color: var(--text-primary);
+        }
+
+        .user-info .logout-btn {
+            padding: 4px 12px;
+            font-size: 11px;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .user-info .logout-btn:hover {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* ====================== */
+        /* SUMMARY TAB STYLES     */
+        /* ====================== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .summary-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .summary-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-card h3 svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .holiday-timeline {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .timeline-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 36px;
+            padding: 6px 4px;
+            border-radius: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+
+        .timeline-day.weekend {
+            background: var(--bg-secondary);
+            opacity: 0.6;
+            border-style: dashed;
+        }
+
+        .timeline-day.public-holiday {
+            background: rgba(0, 212, 170, 0.2);
+            border-color: var(--accent);
+        }
+
+        .timeline-day.christmas {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .timeline-day.christmas .day-name,
+        .timeline-day.christmas .day-num,
+        .timeline-day.christmas .month {
+            color: var(--bg-primary);
+            font-weight: 600;
+        }
+
+        .timeline-day.office-closed {
+            background: rgba(245, 166, 35, 0.15);
+            border-color: var(--warning);
+        }
+
+        .timeline-day .day-name {
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .timeline-day .day-num {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .timeline-day .month {
+            font-size: 8px;
+            color: var(--text-muted);
+        }
+
+        .holiday-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .holiday-table th {
+            padding: 8px 10px;
+            text-align: left;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+            font-size: 11px;
+        }
+
+        .holiday-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .holiday-table tr:hover {
+            background: var(--bg-card);
+        }
+
+        .holiday-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .holiday-badge.public {
+            background: rgba(0, 212, 170, 0.15);
+            color: var(--accent);
+        }
+
+        .holiday-badge.office {
+            background: rgba(245, 166, 35, 0.15);
+            color: var(--warning);
+        }
+
+        .team-leave-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .team-region {
+            margin-bottom: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .team-region h4 {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .leave-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+
+        .leave-item .status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .leave-item .status-icon.working {
+            background: var(--success);
+        }
+
+        .leave-item .status-icon.leave {
+            background: var(--warning);
+        }
+
+        .leave-item .name {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .leave-item .dates {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .focus-list {
+            list-style: none;
+        }
+
+        .focus-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .focus-item.priority-high {
+            border-left-color: var(--danger);
+        }
+
+        .focus-item.priority-medium {
+            border-left-color: var(--warning);
+        }
+
+        .focus-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--accent-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .focus-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--accent);
+        }
+
+        .focus-item.priority-high .focus-icon {
+            background: rgba(224, 36, 94, 0.15);
+        }
+
+        .focus-item.priority-high .focus-icon svg {
+            stroke: var(--danger);
+        }
+
+        .focus-item.priority-medium .focus-icon {
+            background: rgba(245, 166, 35, 0.15);
+        }
+
+        .focus-item.priority-medium .focus-icon svg {
+            stroke: var(--warning);
+        }
+
+        .focus-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .focus-content p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .focus-content .owner {
+            font-size: 11px;
+            color: var(--accent);
+            margin-top: 6px;
+        }
+
+        .safety-moment {
+            background: linear-gradient(135deg, rgba(245, 166, 35, 0.08), rgba(224, 36, 94, 0.05));
+            border: 1px solid rgba(245, 166, 35, 0.25);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+        }
+
+        .safety-moment h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .safety-moment h4 svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .safety-moment p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .safety-tips {
+            margin-top: 8px;
+            padding-left: 18px;
+            columns: 2;
+            column-gap: 24px;
+        }
+
+        .safety-tips li {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <h2>Program View</h2>
+            <p class="subtitle">Vysus Group Resource Management</p>
+            <button class="login-btn" onclick="openLogin()">
+                Sign in with Vysus Email
+            </button>
+            <p class="login-note">Restricted to @vysus.com email addresses</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Program View</h1>
+            <div class="header-right">
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <span class="user-email" id="userEmail"></span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="syncStatus">Checking connection...</span>
+                    <button class="btn-start-daemon" id="startDaemonBtn" style="display: none;" onclick="startDaemon()">Start Daemon</button>
+                </div>
+                <div class="week-selector" id="weekSelectorContainer">
+                    <span>Week:</span>
+                    <input type="week" id="weekSelector">
+                </div>
+                <button class="btn btn-primary" onclick="saveAllocations()">Save</button>
+                <button class="btn btn-secondary" onclick="exportData()">Export</button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="summary" onclick="switchTab('summary')">Summary</button>
+            <button class="tab" data-tab="projects" onclick="switchTab('projects')">Projects</button>
+            <button class="tab" data-tab="radar" onclick="switchTab('radar')">Sales Radar</button>
+        </div>
+
+        <!-- Summary Tab Content -->
+        <div class="tab-content active" id="tab-summary">
+            <div class="safety-moment">
+                <h4>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    Safety Moment - Holiday Season Driving
+                </h4>
+                <p>As we head into the holiday break, many of us will be travelling long distances to visit family and friends. Summer driving presents unique challenges with increased traffic, fatigue on long journeys, and unpredictable weather.</p>
+                <ul class="safety-tips">
+                    <li>Plan your journey and take regular breaks every 2 hours - fatigue is a major factor in holiday accidents</li>
+                    <li>Check your vehicle before long trips: tyres, oil, coolant, and ensure your spare tyre is in good condition</li>
+                    <li>Stay hydrated and avoid heavy meals before driving - they can cause drowsiness</li>
+                    <li>Be patient with increased traffic and allow extra time for your journey</li>
+                    <li>If you feel tired, pull over safely and rest - no meeting or deadline is worth your safety</li>
+                </ul>
+            </div>
+
+            <div class="summary-grid">
+                <!-- Public Holidays -->
+                <div class="summary-card">
+                    <h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        Public Holidays - December/January
+                    </h3>
+
+                    <!-- Timeline -->
+                    <div class="holiday-timeline">
+                        <div class="timeline-day"><span class="day-name">Mon</span><span class="day-num">16</span><span class="month">Dec</span></div>
+                        <div class="timeline-day"><span class="day-name">Tue</span><span class="day-num">17</span><span class="month">Dec</span></div>
+                        <div class="timeline-day"><span class="day-name">Wed</span><span class="day-num">18</span><span class="month">Dec</span></div>
+                        <div class="timeline-day"><span class="day-name">Thu</span><span class="day-num">19</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed"><span class="day-name">Fri</span><span class="day-num">20</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed weekend"><span class="day-name">Sat</span><span class="day-num">21</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed weekend"><span class="day-name">Sun</span><span class="day-num">22</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed"><span class="day-name">Mon</span><span class="day-num">23</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed"><span class="day-name">Tue</span><span class="day-num">24</span><span class="month">Dec</span></div>
+                        <div class="timeline-day christmas"><span class="day-name">Wed</span><span class="day-num">25</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed public-holiday"><span class="day-name">Thu</span><span class="day-num">26</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed"><span class="day-name">Fri</span><span class="day-num">27</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed weekend"><span class="day-name">Sat</span><span class="day-num">28</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed weekend"><span class="day-name">Sun</span><span class="day-num">29</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed"><span class="day-name">Mon</span><span class="day-num">30</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed"><span class="day-name">Tue</span><span class="day-num">31</span><span class="month">Dec</span></div>
+                        <div class="timeline-day office-closed public-holiday"><span class="day-name">Wed</span><span class="day-num">1</span><span class="month">Jan</span></div>
+                        <div class="timeline-day office-closed"><span class="day-name">Thu</span><span class="day-num">2</span><span class="month">Jan</span></div>
+                        <div class="timeline-day office-closed"><span class="day-name">Fri</span><span class="day-num">3</span><span class="month">Jan</span></div>
+                        <div class="timeline-day office-closed weekend"><span class="day-name">Sat</span><span class="day-num">4</span><span class="month">Jan</span></div>
+                        <div class="timeline-day office-closed weekend"><span class="day-name">Sun</span><span class="day-num">5</span><span class="month">Jan</span></div>
+                        <div class="timeline-day"><span class="day-name">Mon</span><span class="day-num">6</span><span class="month">Jan</span></div>
+                    </div>
+                    <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 10px; flex-wrap: wrap;">
+                        <span><span style="display: inline-block; width: 10px; height: 10px; background: var(--accent); border-radius: 3px; margin-right: 4px;"></span>Christmas Day</span>
+                        <span><span style="display: inline-block; width: 10px; height: 10px; background: rgba(0, 212, 170, 0.2); border: 1px solid var(--accent); border-radius: 3px; margin-right: 4px;"></span>Public Holiday</span>
+                        <span><span style="display: inline-block; width: 10px; height: 10px; background: rgba(245, 166, 35, 0.15); border: 1px solid var(--warning); border-radius: 3px; margin-right: 4px;"></span>Melbourne Office Closed</span>
+                        <span><span style="display: inline-block; width: 10px; height: 10px; background: var(--bg-secondary); border: 1px dashed var(--border); border-radius: 3px; margin-right: 4px;"></span>Weekend</span>
+                    </div>
+
+                    <table class="holiday-table">
+                        <thead>
+                            <tr>
+                                <th>Region</th>
+                                <th>Date</th>
+                                <th>Holiday</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Australia</td>
+                                <td>Wed 25 Dec</td>
+                                <td>Christmas Day</td>
+                                <td><span class="holiday-badge public">Public</span></td>
+                            </tr>
+                            <tr>
+                                <td>Australia</td>
+                                <td>Thu 26 Dec</td>
+                                <td>Boxing Day</td>
+                                <td><span class="holiday-badge public">Public</span></td>
+                            </tr>
+                            <tr>
+                                <td>Australia</td>
+                                <td>Wed 1 Jan</td>
+                                <td>New Year's Day</td>
+                                <td><span class="holiday-badge public">Public</span></td>
+                            </tr>
+                            <tr>
+                                <td>Malaysia</td>
+                                <td>Wed 25 Dec</td>
+                                <td>Christmas Day</td>
+                                <td><span class="holiday-badge public">Public</span></td>
+                            </tr>
+                            <tr>
+                                <td>Malaysia</td>
+                                <td>Wed 1 Jan</td>
+                                <td>New Year's Day</td>
+                                <td><span class="holiday-badge public">Public</span></td>
+                            </tr>
+                            <tr>
+                                <td>India</td>
+                                <td>Wed 25 Dec</td>
+                                <td>Christmas Day</td>
+                                <td><span class="holiday-badge public">Public</span></td>
+                            </tr>
+                            <tr>
+                                <td>India</td>
+                                <td>Wed 1 Jan</td>
+                                <td>New Year's Day</td>
+                                <td><span class="holiday-badge public">Public</span></td>
+                            </tr>
+                            <tr>
+                                <td>Melbourne</td>
+                                <td>Fri 20 Dec - Sun 5 Jan</td>
+                                <td>Melbourne Office Closed</td>
+                                <td><span class="holiday-badge office">Office</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Team Leave Calendar -->
+                <div class="summary-card">
+                    <h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        Team Calendar - Christmas Period
+                    </h3>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Most team members working through - key contacts available</p>
+
+                    <div class="team-region">
+                        <h4>Australia (Public Holiday 25-26 Dec)</h4>
+                        <div class="leave-item">
+                            <span class="status-icon leave"></span>
+                            <span class="name">Anthony Morton <span style="color: var(--text-muted); font-size: 11px;">(GM)</span></span>
+                            <span class="dates">Leave 20 Dec - 6 Jan</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon" style="background: var(--warning);"></span>
+                            <span class="name">Tony <span style="color: var(--text-muted); font-size: 11px;">(Georgetown)</span></span>
+                            <span class="dates">Leave 23 Dec - 2 Jan</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Ajith Tennakoon <span style="color: var(--text-muted); font-size: 11px;">(AEMO Q7116)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Chris Marinelli <span style="color: var(--text-muted); font-size: 11px;">(Alinta, Blacktop)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Hayden Brunjes <span style="color: var(--text-muted); font-size: 11px;">(Wellington)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Dominic Moncada <span style="color: var(--text-muted); font-size: 11px;">(Gerogery)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Eduardo Laygo <span style="color: var(--text-muted); font-size: 11px;">(Sandy Hybrid)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Khadija Kobra <span style="color: var(--text-muted); font-size: 11px;">(Markaranka)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Komal Gaikwad <span style="color: var(--text-muted); font-size: 11px;">(Upper Calliope)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Lester Schutz</span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Momtazur Rahman <span style="color: var(--text-muted); font-size: 11px;">(Haughton)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Naveen Rajagopal <span style="color: var(--text-muted); font-size: 11px;">(Hallett BESS)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Robby Palackal <span style="color: var(--text-muted); font-size: 11px;">(Hallett BESS)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Zabir Hussainy</span>
+                            <span class="dates">Working through</span>
+                        </div>
+                    </div>
+
+                    <div class="team-region">
+                        <h4>Malaysia (Public Holiday 25 Dec, 1 Jan)</h4>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Amani Syafiqah</span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Izzat Shahdan</span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Shahrul Azri <span style="color: var(--text-muted); font-size: 11px;">(Sandy SF)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Syafiq Ishamuddin <span style="color: var(--text-muted); font-size: 11px;">(Haughton)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Tun</span>
+                            <span class="dates">Working through</span>
+                        </div>
+                    </div>
+
+                    <div class="team-region">
+                        <h4>India (Public Holiday 25 Dec, 1 Jan)</h4>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Abbinit Gaurav <span style="color: var(--text-muted); font-size: 11px;">(Armidale)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Chirag Rohit</span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Faraz Khan</span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Mohammed Nathar</span>
+                            <span class="dates">Working through</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="status-icon working"></span>
+                            <span class="name">Owais Raja <span style="color: var(--text-muted); font-size: 11px;">(Corop)</span></span>
+                            <span class="dates">Working through</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Focus Areas -->
+                <div class="summary-card full-width">
+                    <h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="6"/>
+                            <circle cx="12" cy="12" r="2"/>
+                        </svg>
+                        Key Focus Areas - End of Year
+                    </h3>
+                    <div class="focus-list">
+                        <div class="focus-item priority-high">
+                            <div class="focus-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23"/>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>RP Budget Management - Renewed Focus Required</h4>
+                                <p><strong>Bringing back budget oversight as a core RP responsibility.</strong> With dual-role demands, RPs must actively monitor and flag budget status in project meetings. Cannot afford budgets going significantly over. Immediate client communication required on outstanding debits - especially critical when significant work is upcoming.</p>
+                                <ul style="margin: 8px 0 0 16px; font-size: 12px; color: var(--text-secondary);">
+                                    <li>RPs to review all project budgets</li>
+                                    <li>Flag overruns immediately in meetings</li>
+                                    <li>Contact clients on outstanding debits before new work commences</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="focus-item priority-high">
+                            <div class="focus-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Hallett BESS - Issues Tracker Response</h4>
+                                <p>Energy Australia (Lauri) desperately seeking issues tracker response. Over 100-150 items to address. RFI sitting with us - critical to get issues tracker delivered before Christmas break. Full response planned for end of January.</p>
+                                <div class="owner">Owner: Naveen Rajagopal | Client Contact: Lauri</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item priority-high">
+                            <div class="focus-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="3" y1="9" x2="21" y2="9"/>
+                                    <line x1="9" y1="21" x2="9" y2="9"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Alinta Energy / Mt Challenger - Final Update</h4>
+                                <p>Finalising terms and conditions for MRE BESS Studies. Ensure all contractual items closed out and stakeholders informed of progress before holiday period.</p>
+                                <div class="owner">Owner: Chris Marinelli | Contact: Cedric Banda</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item priority-medium">
+                            <div class="focus-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23"/>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Georgetown Budget Extension Variation</h4>
+                                <p>Budget extension variation in progress - ensuring full coverage of all work. Critical to have this finalised for proper 2026 planning.</p>
+                                <div class="owner">Owner: Tony</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item">
+                            <div class="focus-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Sales Focus - Pipeline Development</h4>
+                                <p>Continue sales push through the holiday period. Review Sales Radar tab for 2026 pipeline opportunities. Key prospects: Pacific Blue (2x BESS), Birdwood, Elgin.</p>
+                                <div class="owner">See: Sales Radar Tab</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item">
+                            <div class="focus-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7,10 12,15 17,10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Arif - Delivery Focus</h4>
+                                <p>Working through to deliver on current commitments. AGL Package A and RES Avonlie SF in progress.</p>
+                                <div class="owner">Owner: Arif</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item" style="border-left-color: var(--success);">
+                            <div class="focus-icon" style="background: rgba(23, 191, 99, 0.15);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#17bf63" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22,4 12,14.01 9,11.01"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Sentinel Program - Winner Announced!</h4>
+                                <p>Winner announced this week! 10 entries received with some great ideas for improvements. Strong engagement across the team.</p>
+                                <div class="owner">Well done team!</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item" style="border-left-color: var(--success);">
+                            <div class="focus-icon" style="background: rgba(23, 191, 99, 0.15);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#17bf63" stroke-width="2">
+                                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                                    <line x1="12" y1="18" x2="12.01" y2="18"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Vysus Capability Flyer - Now Mobile Friendly</h4>
+                                <p>Updated capability flyer is now mobile responsive. Click button takes clients directly to studies/requirements section for easy navigation.</p>
+                                <div class="owner">Ready to share with clients</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item priority-medium">
+                            <div class="focus-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                                    <line x1="7" y1="7" x2="7.01" y2="7"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Haughton - 2x BESS Projects Prospected</h4>
+                                <p>Conversation yesterday prospected 2 BESS battery projects starting early next year. Encourage ongoing dialogue and maintain momentum on this opportunity.</p>
+                                <div class="owner">Action: Continue the conversation | See: Sales Radar</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing & Payments -->
+                <div class="summary-card full-width">
+                    <h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        Billing & Payments Update
+                    </h3>
+                    <div class="focus-list">
+                        <div class="focus-item" style="border-left-color: var(--warning);">
+                            <div class="focus-icon" style="background: rgba(245, 166, 35, 0.15);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12,6 12,12 16,14"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Birdwood - Payment Expected</h4>
+                                <p>Expected to pay before end of year. Follow up if not received by 20 Dec.</p>
+                                <div class="owner">Status: Pending</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item" style="border-left-color: var(--success);">
+                            <div class="focus-icon" style="background: rgba(23, 191, 99, 0.15);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#17bf63" stroke-width="2">
+                                    <polyline points="20,6 9,17 4,12"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>Elgin - Invoice Paid</h4>
+                                <p>One invoice has been paid. Confirm receipt and update records.</p>
+                                <div class="owner">Status: Received</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Tab Content -->
+        <div class="tab-content" id="tab-projects">
+            <div class="resource-pool" id="resourcePool"></div>
+            <div class="projects-grid" id="projectsGrid"></div>
+            <div class="calendar-section" id="calendarSection"></div>
+        </div>
+
+        <!-- Sales Radar Tab Content -->
+        <div class="tab-content" id="tab-radar">
+            <div class="radar-container">
+                <div class="radar-panel">
+                    <div class="radar-header">
+                        <h2>
+                            <span class="radar-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <circle cx="12" cy="12" r="6"/>
+                                    <circle cx="12" cy="12" r="2"/>
+                                    <line x1="12" y1="2" x2="12" y2="6"/>
+                                </svg>
+                            </span>
+                            Sales Radar - 2026
+                        </h2>
+                    </div>
+
+                    <table class="radar-table">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th class="quarter-cell">Q1 2026</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="client-name">Birdwood</div>
+                                    <div class="client-type">Developer</div>
+                                </td>
+                                <td class="quarter-cell">
+                                    <div class="pulse-container">
+                                        <div class="pulse-dot grid" title="Grid Connection"></div>
+                                    </div>
+                                </td>
+                                <td style="text-align: left; font-size: 12px; color: var(--text-secondary);">
+                                    <ul style="margin: 0; padding-left: 16px;">
+                                        <li>Indicated project coming up</li>
+                                        <li>No details - further conversations needed</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="client-name">Elgin</div>
+                                    <div class="client-type">Developer</div>
+                                </td>
+                                <td class="quarter-cell">
+                                    <div class="pulse-container">
+                                        <div class="pulse-dot solar" title="Solar"></div>
+                                    </div>
+                                </td>
+                                <td style="text-align: left; font-size: 12px; color: var(--text-secondary);">
+                                    <ul style="margin: 0; padding-left: 16px;">
+                                        <li>Indicated project coming up</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="client-name">Pacific Blue</div>
+                                    <div class="client-type">Developer</div>
+                                </td>
+                                <td class="quarter-cell">
+                                    <div class="pulse-container">
+                                        <div class="pulse-dot bess" title="BESS"></div>
+                                        <div class="pulse-dot bess" title="BESS"></div>
+                                    </div>
+                                </td>
+                                <td style="text-align: left; font-size: 12px; color: var(--text-secondary);">
+                                    <ul style="margin: 0; padding-left: 16px;">
+                                        <li>2x BESS projects prospected</li>
+                                        <li>Discussed in weekly meeting</li>
+                                        <li>Encourage ongoing conversation</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="radar-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot bess"></span>
+                            <span>BESS</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot solar"></span>
+                            <span>Solar</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot wind"></span>
+                            <span>Wind</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot grid"></span>
+                            <span>Grid Connection</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="summary-panel" id="summaryPanel">
+        <div class="summary-stat">
+            <div class="value" id="totalStaff">0</div>
+            <div class="label">Staff</div>
+        </div>
+        <div class="summary-stat warning">
+            <div class="value" id="overloadedCount">0</div>
+            <div class="label">Overloaded</div>
+        </div>
+        <div class="summary-stat">
+            <div class="value" id="totalHours">0</div>
+            <div class="label">Total Hrs</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8765';
+
+        const resources = [
+            'Ajith Tennakoon', 'Owais Raja', 'Syafiq Ishamuddin', 'Hayden Brunjes',
+            'Eduardo Laygo', 'Komal Gaikwad', 'Khadija Kobra',
+            'Momtazur Rahman', 'Shahrul Faudzi', 'Chirag Rohit',
+            'Zabir Hussainy', 'Dominic Moncada'
+        ];
+
+        const projects = [
+            'Armidale', 'Haughton', 'Gerogery', 'Sandy SF', 'Sandy Hybrid',
+            'Wellington', 'Upper Calliope', 'Markaranka BESS', 'Corop'
+        ];
+
+        const staffColors = {
+            'Ajith Tennakoon': '#FF6B6B', 'Owais Raja': '#4ECDC4', 'Syafiq Ishamuddin': '#45B7D1',
+            'Hayden Brunjes': '#96CEB4', 'Eduardo Laygo': '#FFEAA7', 'Komal Gaikwad': '#DDA0DD',
+            'Khadija Kobra': '#98D8C8', 'Momtazur Rahman': '#F7DC6F', 'Shahrul Faudzi': '#BB8FCE',
+            'Chirag Rohit': '#85C1E9', 'Zabir Hussainy': '#F8B500', 'Dominic Moncada': '#00CED1'
+        };
+
+        let allocations = {};
+        let projectNotes = {};
+        let projectIssues = {};
+        let projectStatus = {};
+        let projectMilestones = {};
+        let draggedStaff = null;
+        let currentMonth = new Date();
+        let currentTab = 'summary';
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `tab-${tabName}`);
+            });
+
+            // Show/hide elements based on tab
+            const weekSelector = document.getElementById('weekSelectorContainer');
+            const summaryPanel = document.getElementById('summaryPanel');
+
+            if (tabName === 'projects') {
+                weekSelector.style.display = 'flex';
+                summaryPanel.style.display = 'flex';
+            } else {
+                weekSelector.style.display = 'none';
+                summaryPanel.style.display = 'none';
+            }
+
+            // Render radar if switching to it
+            if (tabName === 'radar') {
+                renderRadar();
+            }
+        }
+
+        function renderRadar() {
+            // Radar content is now static HTML
+        }
+
+        function init() {
+            const now = new Date();
+            const weekInput = document.getElementById('weekSelector');
+            const year = now.getFullYear();
+            const week = getWeekNumber(now);
+            weekInput.value = `${year}-W${week.toString().padStart(2, '0')}`;
+
+            // Hide week selector and summary panel on initial load (Summary tab)
+            document.getElementById('weekSelectorContainer').style.display = 'none';
+            document.getElementById('summaryPanel').style.display = 'none';
+
+            loadAllocations();
+        }
+
+        function getWeekNumber(d) {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        function getStaffTotalHours(staffName) {
+            let total = 0;
+            Object.values(allocations).forEach(assignments => {
+                const a = assignments.find(x => x.staffName === staffName);
+                if (a) total += a.hours;
+            });
+            return total;
+        }
+
+        function getHoursClass(hours) {
+            if (hours > 38) return 'hours-over';
+            if (hours >= 36) return 'hours-full';
+            return 'hours-ok';
+        }
+
+        function render() {
+            renderResourcePool();
+            renderProjects();
+            renderCalendar();
+            updateSummary();
+        }
+
+        function renderResourcePool() {
+            const container = document.getElementById('resourcePool');
+            let html = `
+                <div class="resource-pool-header">
+                    <h2>Engineering Resources</h2>
+                    <span style="color: var(--text-muted); font-size: 12px;">Drag to assign</span>
+                </div>
+                <div class="resources-grid">`;
+
+            resources.forEach(name => {
+                const hours = getStaffTotalHours(name);
+                const hoursClass = getHoursClass(hours);
+                const color = staffColors[name] || '#00d4aa';
+                html += `
+                    <div class="resource-chip" draggable="true" data-staff="${name}">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="resource-dot" style="background: ${color};"></span>
+                            <span class="resource-name">${name}</span>
+                        </div>
+                        <span class="resource-hours ${hoursClass}">${hours}h</span>
+                    </div>`;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+            attachDragListeners();
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projectsGrid');
+            let html = '';
+
+            projects.forEach(project => {
+                const assignments = allocations[project] || [];
+                const totalHours = assignments.reduce((sum, a) => sum + a.hours, 0);
+                const status = projectStatus[project] || {};
+                const notes = projectNotes[project] || '';
+                const issues = projectIssues[project] || '';
+
+                html += `
+                    <div class="project-card" data-project="${project}">
+                        <div class="project-header">
+                            <span class="project-title">${project}</span>
+                            <span class="project-hours">${totalHours}h</span>
+                        </div>
+                        <div class="project-body">
+                            <div class="assigned-list">`;
+
+                if (assignments.length === 0) {
+                    html += '<div class="drop-zone">Drop resources here</div>';
+                } else {
+                    assignments.forEach(a => {
+                        const staffTotal = getStaffTotalHours(a.staffName);
+                        const statusClass = staffTotal > 38 ? 'over' : staffTotal >= 36 ? 'full' : '';
+                        const color = staffColors[a.staffName] || '#00d4aa';
+                        html += `
+                            <div class="assigned-item ${statusClass}" style="border-left-color: ${color};">
+                                <span class="assigned-name">${a.staffName}</span>
+                                <div class="assigned-controls">
+                                    <label class="wanted-toggle" title="Mark as wanted">
+                                        <input type="checkbox" ${a.wanted ? 'checked' : ''} onchange="toggleWanted('${project}', '${a.staffName}', this.checked)">
+                                        <span>W</span>
+                                    </label>
+                                    <input type="date" class="date-input" value="${a.wantedBy || ''}" onchange="setWantedDate('${project}', '${a.staffName}', this.value)" title="Wanted by">
+                                    <button class="hour-btn" onclick="adjustHours('${project}', '${a.staffName}', -1)">-</button>
+                                    <input type="number" class="hour-input" value="${a.hours}" min="0" max="60" onchange="setHours('${project}', '${a.staffName}', this.value)">
+                                    <button class="hour-btn" onclick="adjustHours('${project}', '${a.staffName}', 1)">+</button>
+                                    <button class="remove-btn" onclick="removeAssignment('${project}', '${a.staffName}')">x</button>
+                                </div>
+                            </div>`;
+                    });
+                }
+
+                html += `
+                            </div>
+                            <div class="status-section">
+                                <div class="status-checks">
+                                    <label class="status-check">
+                                        <input type="checkbox" ${status.waitingClient ? 'checked' : ''} onchange="updateStatus('${project}', 'waitingClient', this.checked)">
+                                        <span>Waiting Client</span>
+                                    </label>
+                                    <label class="status-check">
+                                        <input type="checkbox" ${status.waitingNSP ? 'checked' : ''} onchange="updateStatus('${project}', 'waitingNSP', this.checked)">
+                                        <span>Waiting NSP</span>
+                                    </label>
+                                    <label class="status-check">
+                                        <input type="checkbox" ${status.waitingAEMO ? 'checked' : ''} onchange="updateStatus('${project}', 'waitingAEMO', this.checked)">
+                                        <span>Waiting AEMO</span>
+                                    </label>
+                                </div>
+                                <div class="expected-row">
+                                    <label>Expected by:</label>
+                                    <input type="date" class="date-input" value="${status.expectedBy || ''}" onchange="updateStatus('${project}', 'expectedBy', this.value)">
+                                </div>
+                                <div class="notes-box">
+                                    <label>Notes</label>
+                                    <textarea placeholder="General notes..." onchange="updateNotes('${project}', this.value)">${notes}</textarea>
+                                </div>
+                                <div class="issues-box">
+                                    <label>Issues / Blockers</label>
+                                    <textarea placeholder="Issues, blockers, risks..." onchange="updateIssues('${project}', this.value)">${issues}</textarea>
+                                </div>
+                                ${renderMilestones(project)}
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = html;
+            attachDropListeners();
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendarSection');
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+            const today = new Date();
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+
+            let html = `
+                <div class="calendar-header">
+                    <h2>${monthNames[month]} ${year} - Resource Calendar</h2>
+                    <div class="calendar-nav">
+                        <button class="btn btn-secondary" onclick="changeMonth(-1)">&lt; Prev</button>
+                        <button class="btn btn-secondary" onclick="changeMonth(1)">Next &gt;</button>
+                    </div>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-day-header">Sun</div>
+                    <div class="calendar-day-header">Mon</div>
+                    <div class="calendar-day-header">Tue</div>
+                    <div class="calendar-day-header">Wed</div>
+                    <div class="calendar-day-header">Thu</div>
+                    <div class="calendar-day-header">Fri</div>
+                    <div class="calendar-day-header">Sat</div>`;
+
+            for (let i = 0; i < startDay; i++) {
+                const prevDate = new Date(year, month, -startDay + i + 1);
+                html += `<div class="calendar-day other-month"><div class="calendar-date">${prevDate.getDate()}</div></div>`;
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const isToday = date.toDateString() === today.toDateString();
+                const events = getEventsForDate(date);
+
+                html += `<div class="calendar-day ${isToday ? 'today' : ''}">
+                    <div class="calendar-date">${day}</div>
+                    <div class="calendar-events">${events}</div>
+                </div>`;
+            }
+
+            const remainingDays = 42 - (startDay + daysInMonth);
+            for (let i = 1; i <= remainingDays; i++) {
+                html += `<div class="calendar-day other-month"><div class="calendar-date">${i}</div></div>`;
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function getEventsForDate(date) {
+            let events = '';
+            const dateStr = date.toISOString().split('T')[0];
+
+            Object.entries(projectStatus).forEach(([project, status]) => {
+                if (status.expectedBy === dateStr) {
+                    events += `<div class="calendar-event" style="background: var(--accent-dim); color: var(--accent);">${project}</div>`;
+                }
+            });
+
+            Object.entries(projectMilestones).forEach(([project, milestones]) => {
+                milestones.forEach((m, i) => {
+                    if (m && m.date === dateStr && !m.complete) {
+                        events += `<div class="calendar-event" style="background: rgba(245, 166, 35, 0.2); color: var(--warning);">M${i+1}: ${m.name || project}</div>`;
+                    }
+                });
+            });
+
+            Object.entries(allocations).forEach(([project, assignments]) => {
+                assignments.forEach(a => {
+                    if (a.wantedBy === dateStr && a.wanted) {
+                        const color = staffColors[a.staffName] || '#00d4aa';
+                        events += `<div class="calendar-event" style="background: ${color}20; color: ${color};">${a.staffName.split(' ')[0]}</div>`;
+                    }
+                });
+            });
+
+            return events;
+        }
+
+        function changeMonth(delta) {
+            currentMonth.setMonth(currentMonth.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function attachDragListeners() {
+            document.querySelectorAll('.resource-chip').forEach(el => {
+                el.addEventListener('dragstart', e => {
+                    draggedStaff = e.target.dataset.staff;
+                    e.target.classList.add('dragging');
+                });
+                el.addEventListener('dragend', e => {
+                    e.target.classList.remove('dragging');
+                    document.querySelectorAll('.project-card').forEach(p => p.classList.remove('drag-over'));
+                });
+            });
+        }
+
+        function attachDropListeners() {
+            document.querySelectorAll('.project-card').forEach(el => {
+                el.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    e.currentTarget.classList.add('drag-over');
+                });
+                el.addEventListener('dragleave', e => {
+                    e.currentTarget.classList.remove('drag-over');
+                });
+                el.addEventListener('drop', e => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove('drag-over');
+                    const project = e.currentTarget.dataset.project;
+                    if (!draggedStaff || !project) return;
+                    if (!allocations[project]) allocations[project] = [];
+                    if (!allocations[project].find(a => a.staffName === draggedStaff)) {
+                        allocations[project].push({ staffName: draggedStaff, hours: 8, wanted: false, wantedBy: '' });
+                    }
+                    render();
+                });
+            });
+        }
+
+        function adjustHours(project, staffName, delta) {
+            const a = (allocations[project] || []).find(x => x.staffName === staffName);
+            if (a) { a.hours = Math.max(0, Math.min(60, a.hours + delta)); render(); }
+        }
+
+        function setHours(project, staffName, value) {
+            const a = (allocations[project] || []).find(x => x.staffName === staffName);
+            if (a) { a.hours = Math.max(0, Math.min(60, parseInt(value) || 0)); render(); }
+        }
+
+        function removeAssignment(project, staffName) {
+            if (allocations[project]) {
+                allocations[project] = allocations[project].filter(a => a.staffName !== staffName);
+                render();
+            }
+        }
+
+        function toggleWanted(project, staffName, wanted) {
+            const a = (allocations[project] || []).find(x => x.staffName === staffName);
+            if (a) { a.wanted = wanted; renderCalendar(); }
+        }
+
+        function setWantedDate(project, staffName, date) {
+            const a = (allocations[project] || []).find(x => x.staffName === staffName);
+            if (a) { a.wantedBy = date; renderCalendar(); }
+        }
+
+        function updateNotes(project, notes) { projectNotes[project] = notes; }
+        function updateIssues(project, issues) { projectIssues[project] = issues; }
+        function updateStatus(project, field, value) {
+            if (!projectStatus[project]) projectStatus[project] = {};
+            projectStatus[project][field] = value;
+            if (field === 'expectedBy') renderCalendar();
+        }
+
+        function renderMilestones(project) {
+            const milestones = projectMilestones[project] || [{}, {}, {}, {}];
+            const today = new Date().toISOString().split('T')[0];
+
+            let html = `<div class="milestones-section">
+                <div class="milestones-header">Key Milestones</div>`;
+
+            for (let i = 0; i < 4; i++) {
+                const m = milestones[i] || {};
+                const isOverdue = m.date && m.date < today && !m.complete;
+                const numClass = m.complete ? 'complete' : isOverdue ? 'overdue' : '';
+                const dateClass = isOverdue ? 'overdue' : '';
+
+                html += `<div class="milestone-row">
+                    <span class="milestone-num ${numClass}">${i + 1}</span>
+                    <input type="checkbox" class="milestone-check" ${m.complete ? 'checked' : ''}
+                        onchange="updateMilestone('${project}', ${i}, 'complete', this.checked)" title="Mark complete">
+                    <input type="text" class="milestone-input" placeholder="Milestone ${i + 1}..."
+                        value="${m.name || ''}" onchange="updateMilestone('${project}', ${i}, 'name', this.value)">
+                    <input type="date" class="milestone-date ${dateClass}" value="${m.date || ''}"
+                        onchange="updateMilestone('${project}', ${i}, 'date', this.value)">
+                </div>`;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function updateMilestone(project, index, field, value) {
+            if (!projectMilestones[project]) {
+                projectMilestones[project] = [{}, {}, {}, {}];
+            }
+            if (!projectMilestones[project][index]) {
+                projectMilestones[project][index] = {};
+            }
+            projectMilestones[project][index][field] = value;
+
+            if (field === 'date' || field === 'complete') {
+                renderCalendar();
+            }
+            if (field === 'date' || field === 'complete') {
+                renderProjects();
+            }
+        }
+
+        function updateSummary() {
+            let overloaded = 0, totalHours = 0;
+            resources.forEach(staff => { if (getStaffTotalHours(staff) > 38) overloaded++; });
+            Object.values(allocations).forEach(arr => arr.forEach(a => totalHours += a.hours));
+            document.getElementById('totalStaff').textContent = resources.length;
+            document.getElementById('overloadedCount').textContent = overloaded;
+            document.getElementById('totalHours').textContent = totalHours;
+        }
+
+        async function saveAllocations() {
+            const week = document.getElementById('weekSelector').value;
+            const data = {
+                week: week,
+                allocations: JSON.stringify(allocations),
+                project_notes: JSON.stringify({ notes: projectNotes, issues: projectIssues, milestones: projectMilestones }),
+                project_status: JSON.stringify(projectStatus)
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/resource-allocation`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    document.getElementById('syncStatus').textContent = 'Saved to Promethean Light';
+                    setTimeout(() => {
+                        document.getElementById('syncStatus').textContent = 'Connected to Promethean Light';
+                    }, 2000);
+                } else {
+                    throw new Error('Save failed');
+                }
+            } catch (e) {
+                localStorage.setItem(`alloc_${week}`, JSON.stringify(allocations));
+                localStorage.setItem(`notes_${week}`, JSON.stringify({ notes: projectNotes, issues: projectIssues, milestones: projectMilestones }));
+                localStorage.setItem(`status_${week}`, JSON.stringify(projectStatus));
+                document.getElementById('syncStatus').textContent = 'Saved locally (offline)';
+            }
+        }
+
+        async function loadAllocations() {
+            const week = document.getElementById('weekSelector').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/resource-allocation/${week}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data) {
+                        allocations = JSON.parse(data.allocations || '{}');
+                        const notesData = JSON.parse(data.project_notes || '{}');
+                        projectNotes = notesData.notes || {};
+                        projectIssues = notesData.issues || {};
+                        projectMilestones = notesData.milestones || {};
+                        projectStatus = JSON.parse(data.project_status || '{}');
+                        document.getElementById('syncStatus').textContent = 'Connected to Promethean Light';
+                    } else {
+                        allocations = {};
+                        projectNotes = {};
+                        projectIssues = {};
+                        projectMilestones = {};
+                        projectStatus = {};
+                    }
+                } else {
+                    throw new Error('Load failed');
+                }
+            } catch (e) {
+                const saved = localStorage.getItem(`alloc_${week}`);
+                const savedNotes = localStorage.getItem(`notes_${week}`);
+                const savedStatus = localStorage.getItem(`status_${week}`);
+                allocations = saved ? JSON.parse(saved) : {};
+                const notesData = savedNotes ? JSON.parse(savedNotes) : {};
+                projectNotes = notesData.notes || {};
+                projectIssues = notesData.issues || {};
+                projectMilestones = notesData.milestones || {};
+                projectStatus = savedStatus ? JSON.parse(savedStatus) : {};
+                document.getElementById('syncStatus').textContent = 'Offline mode';
+            }
+
+            render();
+        }
+
+        function exportData() {
+            const week = document.getElementById('weekSelector').value;
+            let csv = 'Project,Staff,Hours,Wanted,Wanted By,Staff Total,Status,Waiting Client,Waiting NSP,Waiting AEMO,Expected By,Notes,Issues\n';
+            projects.forEach(project => {
+                const arr = allocations[project] || [];
+                const notes = (projectNotes[project] || '').replace(/"/g, '""').replace(/\n/g, ' ');
+                const issues = (projectIssues[project] || '').replace(/"/g, '""').replace(/\n/g, ' ');
+                const status = projectStatus[project] || {};
+
+                if (arr.length === 0) {
+                    csv += `"${project}",-,-,-,-,-,${status.waitingClient ? 'Yes' : 'No'},${status.waitingNSP ? 'Yes' : 'No'},${status.waitingAEMO ? 'Yes' : 'No'},${status.expectedBy || ''},"${notes}","${issues}"\n`;
+                } else {
+                    arr.forEach((a, i) => {
+                        const total = getStaffTotalHours(a.staffName);
+                        csv += `"${project}","${a.staffName}",${a.hours},${a.wanted ? 'Yes' : 'No'},${a.wantedBy || ''},${total},${total > 38 ? 'OVER' : 'OK'},${i === 0 ? (status.waitingClient ? 'Yes' : 'No') : ''},${i === 0 ? (status.waitingNSP ? 'Yes' : 'No') : ''},${i === 0 ? (status.waitingAEMO ? 'Yes' : 'No') : ''},${i === 0 ? (status.expectedBy || '') : ''},"${i === 0 ? notes : ''}","${i === 0 ? issues : ''}"\n`;
+                    });
+                }
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `resource-allocation-${week}.csv`;
+            a.click();
+        }
+
+        setInterval(saveAllocations, 60000);
+
+        async function checkConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/`, { method: 'GET', timeout: 2000 });
+                if (response.ok) {
+                    document.getElementById('statusDot').classList.remove('offline');
+                    document.getElementById('startDaemonBtn').style.display = 'none';
+                    return true;
+                }
+            } catch (e) {
+                document.getElementById('statusDot').classList.add('offline');
+                document.getElementById('syncStatus').textContent = 'Offline - Daemon not running';
+                document.getElementById('startDaemonBtn').style.display = 'inline-block';
+                return false;
+            }
+            return false;
+        }
+
+        async function startDaemon() {
+            document.getElementById('syncStatus').textContent = 'Starting daemon...';
+            document.getElementById('startDaemonBtn').disabled = true;
+
+            try {
+                const link = document.createElement('a');
+                link.href = 'promethean://start';
+                link.click();
+            } catch (e) {
+                console.log('Shell protocol not available');
+            }
+
+            try {
+                window.location.href = 'file:///C:/Code/Promethian%20%20Light/archive_scripts/START.bat';
+            } catch (e) {
+                console.log('Direct file access not available');
+            }
+
+            setTimeout(() => {
+                if (!checkConnection()) {
+                    document.getElementById('syncStatus').textContent = 'Run: python -m mydata daemon';
+                    document.getElementById('startDaemonBtn').disabled = false;
+                    document.getElementById('startDaemonBtn').textContent = 'Retry';
+                    alert('To start the daemon, open a terminal in C:\\Code\\Promethian  Light and run:\n\npython -m mydata daemon\n\nOr double-click START.bat');
+                }
+            }, 2000);
+
+            setTimeout(async () => {
+                const connected = await checkConnection();
+                if (connected) {
+                    document.getElementById('syncStatus').textContent = 'Connected to Promethean Light';
+                    loadAllocations();
+                }
+                document.getElementById('startDaemonBtn').disabled = false;
+            }, 5000);
+        }
+
+        setInterval(checkConnection, 10000);
+
+        document.getElementById('weekSelector').addEventListener('change', loadAllocations);
+
+        // =====================
+        // AUTHENTICATION
+        // =====================
+        const ALLOWED_DOMAIN = 'vysus.com';
+
+        function openLogin() {
+            if (window.netlifyIdentity) {
+                netlifyIdentity.open('login');
+            } else {
+                alert('Authentication service not available. Please try again.');
+            }
+        }
+
+        function logout() {
+            if (window.netlifyIdentity) {
+                netlifyIdentity.logout();
+            }
+        }
+
+        function checkAuth() {
+            const user = netlifyIdentity.currentUser();
+            if (user) {
+                // Verify email domain
+                const email = user.email || '';
+                if (email.endsWith('@' + ALLOWED_DOMAIN)) {
+                    showApp(user);
+                } else {
+                    alert('Access restricted to @vysus.com email addresses.');
+                    netlifyIdentity.logout();
+                }
+            }
+        }
+
+        function showApp(user) {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('userEmail').textContent = user.email;
+        }
+
+        function hideApp() {
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('userEmail').textContent = '';
+        }
+
+        // Initialize Netlify Identity
+        if (window.netlifyIdentity) {
+            netlifyIdentity.on('init', user => {
+                if (user) {
+                    const email = user.email || '';
+                    if (email.endsWith('@' + ALLOWED_DOMAIN)) {
+                        showApp(user);
+                    } else {
+                        hideApp();
+                    }
+                }
+            });
+
+            netlifyIdentity.on('login', user => {
+                const email = user.email || '';
+                if (email.endsWith('@' + ALLOWED_DOMAIN)) {
+                    showApp(user);
+                    netlifyIdentity.close();
+                } else {
+                    alert('Access restricted to @vysus.com email addresses.');
+                    netlifyIdentity.logout();
+                }
+            });
+
+            netlifyIdentity.on('logout', () => {
+                hideApp();
+            });
+
+            netlifyIdentity.on('error', err => {
+                console.error('Auth error:', err);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
