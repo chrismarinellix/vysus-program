@@ -2769,6 +2769,9 @@
 
         // Initialize Netlify Identity
         if (window.netlifyIdentity) {
+            // Handle invite/recovery tokens in URL
+            netlifyIdentity.init();
+
             netlifyIdentity.on('init', user => {
                 if (user) {
                     const email = user.email || '';
