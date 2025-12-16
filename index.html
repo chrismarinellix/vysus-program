@@ -1289,31 +1289,47 @@
         }
 
         .focus-list {
-            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
         }
 
         .focus-item {
             display: flex;
-            gap: 12px;
-            padding: 14px 16px;
+            flex-direction: column;
+            padding: 16px 20px;
             background: var(--bg-card);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 3px solid var(--accent);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .focus-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .focus-item.priority-high {
-            border-left-color: var(--danger);
+            border-color: var(--danger);
+            background: linear-gradient(135deg, rgba(224, 36, 94, 0.08) 0%, var(--bg-card) 100%);
         }
 
         .focus-item.priority-medium {
-            border-left-color: var(--warning);
+            border-color: var(--warning);
+            background: linear-gradient(135deg, rgba(245, 166, 35, 0.08) 0%, var(--bg-card) 100%);
+        }
+
+        .focus-item-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .focus-icon {
             width: 32px;
             height: 32px;
-            border-radius: 8px;
+            border-radius: 10px;
             background: var(--accent-dim);
             display: flex;
             align-items: center;
@@ -1328,7 +1344,7 @@
         }
 
         .focus-item.priority-high .focus-icon {
-            background: rgba(224, 36, 94, 0.15);
+            background: rgba(224, 36, 94, 0.2);
         }
 
         .focus-item.priority-high .focus-icon svg {
@@ -1336,7 +1352,7 @@
         }
 
         .focus-item.priority-medium .focus-icon {
-            background: rgba(245, 166, 35, 0.15);
+            background: rgba(245, 166, 35, 0.2);
         }
 
         .focus-item.priority-medium .focus-icon svg {
@@ -1344,22 +1360,26 @@
         }
 
         .focus-content h4 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 4px;
+            margin: 0;
+            flex: 1;
         }
 
         .focus-content p {
             font-size: 12px;
             color: var(--text-secondary);
             line-height: 1.5;
+            margin-bottom: 8px;
         }
 
         .focus-content .owner {
             font-size: 11px;
             color: var(--accent);
-            margin-top: 6px;
+            margin-top: auto;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
         }
 
         .safety-moment {
@@ -1407,8 +1427,8 @@
     </style>
 </head>
 <body>
-    <!-- Login Overlay -->
-    <div class="login-overlay" id="loginOverlay">
+    <!-- Login Overlay - Temporarily disabled -->
+    <div class="login-overlay hidden" id="loginOverlay">
         <div class="login-box">
             <div class="logo">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1738,11 +1758,11 @@
                             <div style="font-size: 10px; color: var(--bg-primary);">Meeting with Sam</div>
                         </div>
                         <div style="flex-shrink: 0; width: 40px; height: 2px; background: var(--border);"></div>
-                        <!-- Tomorrow -->
+                        <!-- 16 Jan -->
                         <div style="flex-shrink: 0; text-align: center; padding: 12px 20px; background: var(--warning); border-radius: 8px;">
-                            <div style="font-size: 10px; color: var(--bg-primary); text-transform: uppercase; font-weight: 600;">Tomorrow</div>
-                            <div style="font-size: 13px; color: var(--bg-primary); font-weight: 600;">In Office</div>
-                            <div style="font-size: 10px; color: var(--bg-primary);">Sam meeting prep</div>
+                            <div style="font-size: 10px; color: var(--bg-primary); text-transform: uppercase; font-weight: 600;">16 Jan 2025</div>
+                            <div style="font-size: 13px; color: var(--bg-primary); font-weight: 600;">Alencor Proposal</div>
+                            <div style="font-size: 10px; color: var(--bg-primary);">Due - Naveen</div>
                         </div>
                         <div style="flex-shrink: 0; width: 40px; height: 2px; background: var(--border);"></div>
                         <!-- 19 Jan -->
@@ -1766,151 +1786,171 @@
                     </h3>
                     <div class="focus-list">
                         <div class="focus-item priority-high">
-                            <div class="focus-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="1" x2="12" y2="23"/>
-                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                                </svg>
+                            <div class="focus-item-header">
+                                <div class="focus-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="1" x2="12" y2="23"/>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>RP Budget Management</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>RP Budget Management - Renewed Focus Required</h4>
-                                <p><strong>Bringing back budget oversight as a core RP responsibility.</strong> With dual-role demands, RPs must actively monitor and flag budget status in project meetings. Cannot afford budgets going significantly over. Immediate client communication required on outstanding debits - especially critical when significant work is upcoming.</p>
-                                <ul style="margin: 8px 0 0 16px; font-size: 12px; color: var(--text-secondary);">
-                                    <li>RPs to review all project budgets</li>
-                                    <li>Flag overruns immediately in meetings</li>
-                                    <li>Contact clients on outstanding debits before new work commences</li>
+                                <p>Renewed focus required. RPs must actively monitor and flag budget status in project meetings. Cannot afford budgets going significantly over.</p>
+                                <ul style="margin: 4px 0 0 16px; font-size: 11px; color: var(--text-secondary);">
+                                    <li>Review all project budgets</li>
+                                    <li>Flag overruns immediately</li>
+                                    <li>Contact clients on outstanding debits</li>
                                 </ul>
                             </div>
                         </div>
 
                         <div class="focus-item priority-high">
-                            <div class="focus-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                    <polyline points="14,2 14,8 20,8"/>
-                                    <line x1="16" y1="13" x2="8" y2="13"/>
-                                    <line x1="16" y1="17" x2="8" y2="17"/>
-                                </svg>
+                            <div class="focus-item-header">
+                                <div class="focus-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14,2 14,8 20,8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Hallett BESS Issues Tracker</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>Hallett BESS - Issues Tracker Response</h4>
-                                <p>Energy Australia (Lauri) desperately seeking issues tracker response. Over 100-150 items to address. RFI sitting with us - critical to get issues tracker delivered before Christmas break. Full response planned for end of January.</p>
-                                <div class="owner">Owner: Naveen Rajagopal | Client Contact: Lauri</div>
+                                <p>Energy Australia (Lauri) seeking issues tracker response. 100-150 items to address. Critical before Christmas break.</p>
+                                <div class="owner">Owner: Naveen | Contact: Lauri</div>
                             </div>
                         </div>
 
                         <div class="focus-item priority-high">
-                            <div class="focus-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <line x1="3" y1="9" x2="21" y2="9"/>
-                                    <line x1="9" y1="21" x2="9" y2="9"/>
-                                </svg>
+                            <div class="focus-item-header">
+                                <div class="focus-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <line x1="3" y1="9" x2="21" y2="9"/>
+                                        <line x1="9" y1="21" x2="9" y2="9"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Alinta / Mt Challenger</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>Alinta Energy / Mt Challenger - Final Update</h4>
-                                <p>Finalising terms and conditions for MRE BESS Studies. Ensure all contractual items closed out and stakeholders informed of progress before holiday period.</p>
-                                <div class="owner">Owner: Chris Marinelli | Contact: Cedric Banda</div>
+                                <p>Finalising Ts&Cs for MRE BESS Studies. Close out contractual items before holiday period.</p>
+                                <div class="owner">Owner: Chris M | Contact: Cedric Banda</div>
                             </div>
                         </div>
 
                         <div class="focus-item priority-medium">
-                            <div class="focus-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="1" x2="12" y2="23"/>
-                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                                </svg>
+                            <div class="focus-item-header">
+                                <div class="focus-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="1" x2="12" y2="23"/>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Georgetown Budget Variation</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>Georgetown Budget Extension Variation</h4>
-                                <p>Budget extension variation in progress - ensuring full coverage of all work. Critical to have this finalised for proper 2026 planning.</p>
+                                <p>Budget extension variation in progress. Critical for 2026 planning.</p>
                                 <div class="owner">Owner: Tony</div>
                             </div>
                         </div>
 
                         <div class="focus-item">
-                            <div class="focus-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-                                </svg>
+                            <div class="focus-item-header">
+                                <div class="focus-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Sales Focus</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>Sales Focus - Pipeline Development</h4>
-                                <p>Continue sales push through the holiday period. Review Sales Radar tab for 2026 pipeline opportunities. Key prospects: Pacific Blue (2x BESS), Birdwood, Elgin.</p>
+                                <p>Continue sales push through holidays. Key prospects: Pacific Blue (2x BESS), Birdwood, Elgin.</p>
                                 <div class="owner">See: Sales Radar Tab</div>
                             </div>
                         </div>
 
                         <div class="focus-item">
-                            <div class="focus-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7,10 12,15 17,10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
+                            <div class="focus-item-header">
+                                <div class="focus-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7,10 12,15 17,10"/>
+                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Arif - Delivery Focus</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>Arif - Delivery Focus</h4>
-                                <p>Working through to deliver on current commitments. AGL Package A and RES Avonlie SF in progress.</p>
+                                <p>Delivering on commitments. AGL Package A and RES Avonlie SF in progress.</p>
                                 <div class="owner">Owner: Arif</div>
                             </div>
                         </div>
 
                         <div class="focus-item priority-medium">
-                            <div class="focus-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                    <polyline points="14,2 14,8 20,8"/>
-                                    <line x1="16" y1="13" x2="8" y2="13"/>
-                                    <line x1="16" y1="17" x2="8" y2="17"/>
-                                </svg>
+                            <div class="focus-item-header">
+                                <div class="focus-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14,2 14,8 20,8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Alencor Proposal</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>New Project Proposal Development</h4>
-                                <p>Naveen preparing proposal for new project opportunity. In development alongside Hallett BESS commitments.</p>
-                                <div class="owner">Owner: Naveen Rajagopal</div>
+                                <p>Proposal development in progress. Due 16 January 2025.</p>
+                                <div class="owner">Owner: Naveen</div>
                             </div>
                         </div>
 
-                        <div class="focus-item" style="border-left-color: var(--success);">
-                            <div class="focus-icon" style="background: rgba(23, 191, 99, 0.15);">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#17bf63" stroke-width="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                    <polyline points="22,4 12,14.01 9,11.01"/>
-                                </svg>
+                        <div class="focus-item" style="border-color: var(--success);">
+                            <div class="focus-item-header">
+                                <div class="focus-icon" style="background: rgba(23, 191, 99, 0.15);">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#17bf63" stroke-width="2">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                        <polyline points="22,4 12,14.01 9,11.01"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Sentinel Program Winner!</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>Sentinel Program - Winner Announced!</h4>
-                                <p>Winner announced this week! 10 entries received with some great ideas for improvements. Strong engagement across the team.</p>
+                                <p>Winner announced! 10 entries with great ideas. Strong team engagement.</p>
                                 <div class="owner">Well done team!</div>
                             </div>
                         </div>
 
-                        <div class="focus-item" style="border-left-color: var(--success);">
-                            <div class="focus-icon" style="background: rgba(23, 191, 99, 0.15);">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="#17bf63" stroke-width="2">
-                                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-                                    <line x1="12" y1="18" x2="12.01" y2="18"/>
-                                </svg>
+                        <div class="focus-item" style="border-color: var(--success);">
+                            <div class="focus-item-header">
+                                <div class="focus-icon" style="background: rgba(23, 191, 99, 0.15);">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#17bf63" stroke-width="2">
+                                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                                        <line x1="12" y1="18" x2="12.01" y2="18"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Capability Flyer Mobile</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>Vysus Capability Flyer - Now Mobile Friendly</h4>
-                                <p>Updated capability flyer is now mobile responsive. Click button takes clients directly to studies/requirements section for easy navigation.</p>
+                                <p>Now mobile responsive. Click button takes clients directly to studies section.</p>
                                 <div class="owner">Ready to share with clients</div>
                             </div>
                         </div>
 
                         <div class="focus-item priority-medium">
-                            <div class="focus-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                                    <line x1="7" y1="7" x2="7.01" y2="7"/>
-                                </svg>
+                            <div class="focus-item-header">
+                                <div class="focus-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                                        <line x1="7" y1="7" x2="7.01" y2="7"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Haughton 2x BESS Prospected</h4></div>
                             </div>
                             <div class="focus-content">
-                                <h4>Haughton - 2x BESS Projects Prospected</h4>
-                                <p>Conversation yesterday prospected 2 BESS battery projects starting early next year. Encourage ongoing dialogue and maintain momentum on this opportunity.</p>
-                                <div class="owner">Action: Continue the conversation | See: Sales Radar</div>
+                                <p>2 BESS battery projects starting early next year. Maintain momentum.</p>
+                                <div class="owner">Action: Continue conversation</div>
                             </div>
                         </div>
                     </div>
