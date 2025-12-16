@@ -140,6 +140,68 @@
             opacity: 0.85;
         }
 
+        .connection-banner {
+            background: linear-gradient(135deg, #2d1810 0%, #1a2332 100%);
+            border: 1px solid var(--warning);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .connection-banner.hidden {
+            display: none;
+        }
+
+        .connection-banner-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--warning);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .connection-banner-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--bg-primary);
+        }
+
+        .connection-banner-content {
+            flex: 1;
+        }
+
+        .connection-banner-content h3 {
+            color: var(--warning);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .connection-banner-content p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .connection-banner-content code {
+            background: var(--bg-input);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .connection-banner .btn {
+            flex-shrink: 0;
+        }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
@@ -1897,6 +1959,22 @@
 
         <!-- Projects Tab Content -->
         <div class="tab-content" id="tab-projects">
+            <!-- Connection Banner -->
+            <div class="connection-banner" id="connectionBanner">
+                <div class="connection-banner-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                        <line x1="12" y1="14" x2="12" y2="16"/>
+                        <line x1="12" y1="18" x2="12.01" y2="18"/>
+                    </svg>
+                </div>
+                <div class="connection-banner-content">
+                    <h3>Connect to Database for Latest Information</h3>
+                    <p>To view and save project data, start the Promethean Light daemon locally.<br>
+                    Run <code>python -m mydata daemon</code> in the Promethian Light folder, or open the desktop app.</p>
+                </div>
+                <button class="btn btn-primary" onclick="startDaemon()">Connect</button>
+            </div>
             <div class="resource-pool" id="resourcePool"></div>
             <div class="projects-grid" id="projectsGrid"></div>
             <div class="calendar-section" id="calendarSection"></div>
@@ -2102,6 +2180,8 @@
             document.getElementById('weekSelectorContainer').style.display = 'none';
             document.getElementById('summaryPanel').style.display = 'none';
 
+            // Check connection and update banner
+            checkConnection();
             loadAllocations();
         }
 
@@ -2562,17 +2642,20 @@
         setInterval(saveAllocations, 60000);
 
         async function checkConnection() {
+            const banner = document.getElementById('connectionBanner');
             try {
                 const response = await fetch(`${API_BASE}/`, { method: 'GET', timeout: 2000 });
                 if (response.ok) {
                     document.getElementById('statusDot').classList.remove('offline');
                     document.getElementById('startDaemonBtn').style.display = 'none';
+                    if (banner) banner.classList.add('hidden');
                     return true;
                 }
             } catch (e) {
                 document.getElementById('statusDot').classList.add('offline');
                 document.getElementById('syncStatus').textContent = 'Offline - Daemon not running';
                 document.getElementById('startDaemonBtn').style.display = 'inline-block';
+                if (banner) banner.classList.remove('hidden');
                 return false;
             }
             return false;
