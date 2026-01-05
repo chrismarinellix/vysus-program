@@ -1,2 +1,10 @@
 # Local Netlify folder
 .netlify
+
+# Environment files (never commit real credentials)
+.env
+.env.local
+.env.*.local
+
+# Supabase local config
+supabase/.env
