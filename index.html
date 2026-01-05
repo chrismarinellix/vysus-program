@@ -4187,14 +4187,14 @@
         const SupabaseAuth = {
             async signIn(email, password) {
                 if (!supabaseClient) return { error: 'Supabase not initialized' };
-                const { data, error } = await supabaseClientClient.auth.signInWithPassword({ email, password });
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (!error) this.logAudit('login', null, null);
                 return { data, error };
             },
 
             async signUp(email, password, fullName) {
                 if (!supabaseClient) return { error: 'Supabase not initialized' };
-                const { data, error } = await supabaseClientClient.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email,
                     password,
                     options: { data: { full_name: fullName } }
@@ -4204,19 +4204,19 @@
 
             async signOut() {
                 if (!supabaseClient) return { error: 'Supabase not initialized' };
-                const { error } = await supabaseClientClient.auth.signOut();
+                const { error } = await supabaseClient.auth.signOut();
                 return { error };
             },
 
             async getUser() {
                 if (!supabaseClient) return null;
-                const { data: { user } } = await supabaseClientClient.auth.getUser();
+                const { data: { user } } = await supabaseClient.auth.getUser();
                 return user;
             },
 
             async getSession() {
                 if (!supabaseClient) return null;
-                const { data: { session } } = await supabaseClientClient.auth.getSession();
+                const { data: { session } } = await supabaseClient.auth.getSession();
                 return session;
             },
 
@@ -4231,7 +4231,7 @@
                 if (!supabaseClient) return;
                 try {
                     const user = await this.getUser();
-                    await supabaseClientClient.from('audit_log').insert({
+                    await supabaseClient.from('audit_log').insert({
                         user_id: user?.id,
                         action,
                         table_name: tableName,
