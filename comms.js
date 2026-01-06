@@ -1,6 +1,8 @@
 // Communications Tab - Email Activity & Follow-ups
-// Client communications data (loaded from sent emails)
-const commsData = {
+// Uses Supabase for data storage with localStorage fallback
+
+// Default data (fallback when Supabase unavailable)
+const defaultCommsData = {
     sent: [
         { date: '2026-01-06 00:33', client: 'ElectraNet', subject: 'Clements Gap R1 DD - Variation - Q7211', to: 'Sazzad Rahman' },
         { date: '2026-01-06 00:31', client: 'OX2', subject: 'RE: Vysus support OX2 harmonic assessment', to: 'Alex Trieu' },
@@ -35,7 +37,218 @@ const commsData = {
     ]
 };
 
-function renderCommsTab() {
+let commsData = JSON.parse(JSON.stringify(defaultCommsData));
+let commsDataSource = 'local';
+
+// Supabase Communications Service
+const CommsService = {
+    async isSupabaseAvailable() {
+        if (typeof supabaseClient === 'undefined' || !supabaseClient) return false;
+        try {
+            const session = await supabaseClient.auth.getSession();
+            return !!session?.data?.session;
+        } catch (e) {
+            return false;
+        }
+    },
+
+    async loadFromSupabase() {
+        if (!await this.isSupabaseAvailable()) return null;
+
+        try {
+            // Load communications
+            const { data: comms, error: commsError } = await supabaseClient
+                .from('communications')
+                .select('*')
+                .order('comm_date', { ascending: false })
+                .limit(100);
+
+            // Load followups
+            const { data: followups, error: followupsError } = await supabaseClient
+                .from('followups')
+                .select('*')
+                .eq('completed', false)
+                .order('due_date', { ascending: true });
+
+            if (commsError || followupsError) {
+                console.log('Supabase comms load error:', commsError || followupsError);
+                return null;
+            }
+
+            // Transform to our format
+            const sent = comms?.filter(c => c.comm_type === 'sent').map(c => ({
+                id: c.id,
+                date: new Date(c.comm_date).toISOString().slice(0, 16).replace('T', ' '),
+                client: c.client,
+                subject: c.subject,
+                to: c.contact_name
+            })) || [];
+
+            const received = comms?.filter(c => c.comm_type === 'received').map(c => ({
+                id: c.id,
+                date: new Date(c.comm_date).toISOString().slice(0, 16).replace('T', ' '),
+                client: c.client,
+                subject: c.subject,
+                from: c.contact_name
+            })) || [];
+
+            const followupsList = followups?.map(f => ({
+                id: f.id,
+                date: f.due_date,
+                client: f.client,
+                task: f.task,
+                priority: f.priority,
+                contact: f.contact_name
+            })) || [];
+
+            return { sent, received, followups: followupsList };
+        } catch (e) {
+            console.log('Supabase comms load exception:', e);
+            return null;
+        }
+    },
+
+    async saveToSupabase(type, item) {
+        if (!await this.isSupabaseAvailable()) return false;
+
+        try {
+            if (type === 'communication') {
+                const { error } = await supabaseClient
+                    .from('communications')
+                    .insert({
+                        comm_type: item.type, // 'sent' or 'received'
+                        comm_date: item.date,
+                        client: item.client,
+                        subject: item.subject,
+                        contact_name: item.contact
+                    });
+                return !error;
+            } else if (type === 'followup') {
+                const { error } = await supabaseClient
+                    .from('followups')
+                    .insert({
+                        due_date: item.date,
+                        client: item.client,
+                        task: item.task,
+                        priority: item.priority || 'medium',
+                        contact_name: item.contact
+                    });
+                return !error;
+            }
+        } catch (e) {
+            console.log('Supabase comms save error:', e);
+        }
+        return false;
+    },
+
+    async seedSupabaseFromDefaults() {
+        if (!await this.isSupabaseAvailable()) return false;
+
+        try {
+            // Check if data already exists
+            const { data: existing } = await supabaseClient
+                .from('communications')
+                .select('id')
+                .limit(1);
+
+            if (existing && existing.length > 0) {
+                console.log('Supabase comms already seeded');
+                return true;
+            }
+
+            // Seed sent emails
+            for (const item of defaultCommsData.sent) {
+                await supabaseClient.from('communications').insert({
+                    comm_type: 'sent',
+                    comm_date: item.date.replace(' ', 'T') + ':00Z',
+                    client: item.client,
+                    subject: item.subject,
+                    contact_name: item.to
+                });
+            }
+
+            // Seed received emails
+            for (const item of defaultCommsData.received) {
+                await supabaseClient.from('communications').insert({
+                    comm_type: 'received',
+                    comm_date: item.date.replace(' ', 'T') + ':00Z',
+                    client: item.client,
+                    subject: item.subject,
+                    contact_name: item.from
+                });
+            }
+
+            // Seed followups
+            for (const item of defaultCommsData.followups) {
+                await supabaseClient.from('followups').insert({
+                    due_date: item.date,
+                    client: item.client,
+                    task: item.task,
+                    priority: item.priority,
+                    contact_name: item.contact
+                });
+            }
+
+            console.log('Supabase comms seeded successfully');
+            return true;
+        } catch (e) {
+            console.log('Supabase seed error:', e);
+            return false;
+        }
+    }
+};
+
+async function loadCommsData() {
+    // Try Supabase first
+    const supabaseData = await CommsService.loadFromSupabase();
+    if (supabaseData && (supabaseData.sent.length > 0 || supabaseData.received.length > 0)) {
+        commsData = supabaseData;
+        commsDataSource = 'supabase';
+        console.log('Loaded comms from Supabase');
+    } else {
+        // Try localStorage
+        const cached = localStorage.getItem('comms_data');
+        if (cached) {
+            try {
+                commsData = JSON.parse(cached);
+                commsDataSource = 'localStorage';
+                console.log('Loaded comms from localStorage');
+            } catch (e) {
+                commsData = JSON.parse(JSON.stringify(defaultCommsData));
+                commsDataSource = 'default';
+            }
+        } else {
+            commsData = JSON.parse(JSON.stringify(defaultCommsData));
+            commsDataSource = 'default';
+        }
+
+        // Try to seed Supabase with defaults
+        if (await CommsService.isSupabaseAvailable()) {
+            await CommsService.seedSupabaseFromDefaults();
+        }
+    }
+
+    // Cache to localStorage
+    localStorage.setItem('comms_data', JSON.stringify(commsData));
+
+    updateCommsDataSourceIndicator();
+}
+
+function updateCommsDataSourceIndicator() {
+    const indicator = document.getElementById('commsDataSource');
+    if (indicator) {
+        if (commsDataSource === 'supabase') {
+            indicator.innerHTML = '<span style="color: #17bf63;">● Supabase</span>';
+        } else if (commsDataSource === 'localStorage') {
+            indicator.innerHTML = '<span style="color: #f5a623;">● Local Cache</span>';
+        } else {
+            indicator.innerHTML = '<span style="color: var(--text-muted);">● Default Data</span>';
+        }
+    }
+}
+
+async function renderCommsTab() {
+    await loadCommsData();
     renderActivityTimeline();
     renderFollowupTimeline();
     renderEmailLists();
@@ -52,11 +265,11 @@ function renderActivityTimeline() {
         date.setDate(date.getDate() - i);
         days.push(date);
     }
-    const allEmails = [...commsData.sent, ...commsData.received];
+    const allEmails = [...(commsData.sent || []), ...(commsData.received || [])];
     container.innerHTML = days.map(date => {
         const dateStr = date.toISOString().split('T')[0];
-        const dayEmails = allEmails.filter(e => e.date.startsWith(dateStr));
-        const sentCount = commsData.sent.filter(e => e.date.startsWith(dateStr)).length;
+        const dayEmails = allEmails.filter(e => e.date && e.date.startsWith(dateStr));
+        const sentCount = (commsData.sent || []).filter(e => e.date && e.date.startsWith(dateStr)).length;
         const isToday = dateStr === today.toISOString().split('T')[0];
         const isWeekend = date.getDay() === 0 || date.getDay() === 6;
         const height = Math.min(80, Math.max(20, dayEmails.length * 15));
@@ -83,9 +296,10 @@ function renderFollowupTimeline() {
         date.setDate(date.getDate() + i);
         days.push(date);
     }
+    const followups = commsData.followups || [];
     container.innerHTML = days.map(date => {
         const dateStr = date.toISOString().split('T')[0];
-        const dayFollowups = commsData.followups.filter(f => f.date === dateStr);
+        const dayFollowups = followups.filter(f => f.date === dateStr);
         const isToday = dateStr === today.toISOString().split('T')[0];
         const isWeekend = date.getDay() === 0 || date.getDay() === 6;
         const hasHigh = dayFollowups.some(f => f.priority === 'high');
@@ -97,7 +311,7 @@ function renderFollowupTimeline() {
         </div>`;
     }).join('');
     if (listContainer) {
-        listContainer.innerHTML = commsData.followups.map(f => {
+        listContainer.innerHTML = followups.map(f => {
             const priorityColor = f.priority === 'high' ? 'var(--danger)' : f.priority === 'medium' ? 'var(--warning)' : 'var(--success)';
             return `<div style="background: var(--bg-secondary); border-radius: 10px; padding: 16px; border-left: 4px solid ${priorityColor};">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
@@ -117,8 +331,11 @@ function renderFollowupTimeline() {
 function renderEmailLists() {
     const sentContainer = document.getElementById('sentEmailsList');
     const recvContainer = document.getElementById('receivedEmailsList');
+    const sent = commsData.sent || [];
+    const received = commsData.received || [];
+
     if (sentContainer) {
-        sentContainer.innerHTML = commsData.sent.map(e => `<div style="padding: 12px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px;">
+        sentContainer.innerHTML = sent.map(e => `<div style="padding: 12px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #45b7d120; color: #45b7d1;">${e.client}</span>
                 <span style="font-size: 11px; color: var(--text-muted);">${e.date}</span>
@@ -128,7 +345,7 @@ function renderEmailLists() {
         </div>`).join('');
     }
     if (recvContainer) {
-        recvContainer.innerHTML = commsData.received.map(e => `<div style="padding: 12px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px;">
+        recvContainer.innerHTML = received.map(e => `<div style="padding: 12px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #17bf6320; color: #17bf63;">${e.client}</span>
                 <span style="font-size: 11px; color: var(--text-muted);">${e.date}</span>
@@ -143,10 +360,12 @@ function renderClientSummary() {
     const container = document.getElementById('clientSummaryCards');
     if (!container) return;
     const clients = {};
-    const allEmails = [...commsData.sent, ...commsData.received];
+    const sent = commsData.sent || [];
+    const received = commsData.received || [];
+    const allEmails = [...sent, ...received];
     allEmails.forEach(e => {
         if (!clients[e.client]) clients[e.client] = { sent: 0, received: 0, lastContact: e.date };
-        if (commsData.sent.includes(e)) clients[e.client].sent++;
+        if (sent.includes(e)) clients[e.client].sent++;
         else clients[e.client].received++;
         if (e.date > clients[e.client].lastContact) clients[e.client].lastContact = e.date;
     });
@@ -156,12 +375,21 @@ function renderClientSummary() {
             <div><span style="font-size: 20px; font-weight: 700; color: #17bf63;">${data.sent}</span><span style="font-size: 11px; color: var(--text-muted);"> sent</span></div>
             <div><span style="font-size: 20px; font-weight: 700; color: #45b7d1;">${data.received}</span><span style="font-size: 11px; color: var(--text-muted);"> received</span></div>
         </div>
-        <div style="font-size: 11px; color: var(--text-muted);">Last contact: ${data.lastContact.split(' ')[0]}</div>
+        <div style="font-size: 11px; color: var(--text-muted);">Last contact: ${data.lastContact ? data.lastContact.split(' ')[0] : 'N/A'}</div>
     </div>`).join('');
 }
 
-function refreshCommsData() { renderCommsTab(); }
-function filterComms() { renderCommsTab(); }
+async function refreshCommsData() {
+    await loadCommsData();
+    renderActivityTimeline();
+    renderFollowupTimeline();
+    renderEmailLists();
+    renderClientSummary();
+}
+
+function filterComms() {
+    renderCommsTab();
+}
 
 // Hook into tab switching to render comms when visible
 document.addEventListener('DOMContentLoaded', () => {
