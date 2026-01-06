@@ -7,6 +7,8 @@
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Communications Tab -->
+    <script src="comms.js" defer></script>
     <style>
         :root {
             --bg-primary: #0f1419;
@@ -1094,11 +1096,35 @@
             opacity: 0.7;
         }
 
-        /* GitHub-style Activity Indicators */
+        /* Daily Allocation Grid - Vertical Layout */
         .activity-grid {
             display: flex;
-            gap: 3px;
-            margin-top: 6px;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .day-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 2px 0;
+        }
+
+        .day-label {
+            width: 90px;
+            white-space: nowrap;
+        }
+
+        .day-hours {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .day-hours.has-hours {
+            color: var(--accent);
         }
 
         .activity-cell {
@@ -1243,9 +1269,9 @@
         /* Resource Row with Activity */
         .resource-row {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
-            padding: 10px 14px;
+            padding: 12px 14px;
             background: var(--bg-card);
             border-radius: 8px;
             margin-bottom: 8px;
@@ -1256,6 +1282,7 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+            flex: 1;
         }
 
         .resource-name-row {
@@ -1276,6 +1303,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            padding-top: 2px;
         }
 
         /* Collapsible Details Section */
@@ -1960,6 +1988,71 @@
         .legend-dot.solar { background: #ffd93d; }
         .legend-dot.wind { background: #6bcf7f; }
         .legend-dot.grid { background: #00d4aa; }
+
+        /* Editable Radar Notes */
+        .radar-notes-cell {
+            position: relative;
+        }
+
+        .radar-notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 12px;
+            line-height: 1.5;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .radar-notes-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2);
+        }
+
+        .radar-save-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .radar-save-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radar-save-btn.primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .radar-save-btn.primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .radar-save-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radar-save-status.success {
+            color: var(--success);
+        }
 
         /* ====================== */
         /* LOGIN OVERLAY STYLES   */
@@ -2824,6 +2917,7 @@
             <button class="tab" data-tab="projects" onclick="switchTab('projects')">Projects</button>
             <button class="tab" data-tab="radar" onclick="switchTab('radar')">Sales Radar</button>
             <button class="tab" data-tab="stakeholders" onclick="switchTab('stakeholders')">Stakeholders</button>
+            <button class="tab" data-tab="comms" onclick="switchTab('comms')">Communications</button>
             <button class="tab" data-tab="drill" onclick="switchTab('drill')">Drill</button>
             <button class="tab" data-tab="calendar" onclick="switchTab('calendar')">Calendar</button>
             <button class="tab" data-tab="map" onclick="switchTab('map')">Industry Map</button>
@@ -3146,12 +3240,11 @@
                                         <div class="pulse-dot grid" title="Grid Connection"></div>
                                     </div>
                                 </td>
-                                <td style="text-align: left; font-size: 12px; color: var(--text-secondary);">
-                                    <ul style="margin: 0; padding-left: 16px;">
-                                        <li>Indicated project coming up</li>
-                                        <li>No details - further conversations needed</li>
-                                        <li style="color: var(--accent);">Contact: TBC</li>
-                                    </ul>
+                                <td class="radar-notes-cell">
+                                    <textarea class="radar-notes-textarea" data-client="birdwood" placeholder="Add notes...">• Indicated project coming up
+• Eric asked for R1/R2 proposal - thought we had applied
+• ACTION: Follow up on R1/R2 submission status
+• Contact: Eric</textarea>
                                 </td>
                             </tr>
                             <tr>
@@ -3164,11 +3257,11 @@
                                         <div class="pulse-dot solar" title="Solar"></div>
                                     </div>
                                 </td>
-                                <td style="text-align: left; font-size: 12px; color: var(--text-secondary);">
-                                    <ul style="margin: 0; padding-left: 16px;">
-                                        <li>Indicated project coming up</li>
-                                        <li style="color: var(--accent);">Contact: TBC</li>
-                                    </ul>
+                                <td class="radar-notes-cell">
+                                    <textarea class="radar-notes-textarea" data-client="elgin" placeholder="Add notes...">• Indicated project coming up
+• Hasn't paid - need to understand if getting feedback
+• Check if they have submitted
+• Contact: TBC</textarea>
                                 </td>
                             </tr>
                             <tr>
@@ -3182,17 +3275,20 @@
                                         <div class="pulse-dot bess" title="BESS"></div>
                                     </div>
                                 </td>
-                                <td style="text-align: left; font-size: 12px; color: var(--text-secondary);">
-                                    <ul style="margin: 0; padding-left: 16px;">
-                                        <li>2x BESS projects prospected</li>
-                                        <li>Discussed in weekly meeting</li>
-                                        <li>Encourage ongoing conversation</li>
-                                        <li style="color: var(--accent);">Contact: Daniel Choi</li>
-                                    </ul>
+                                <td class="radar-notes-cell">
+                                    <textarea class="radar-notes-textarea" data-client="pacific_blue" placeholder="Add notes...">• 2x BESS projects prospected
+• Discussed in weekly meeting
+• Encourage ongoing conversation
+• Contact: Daniel Choi</textarea>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+
+                    <div class="radar-save-row">
+                        <span class="radar-save-status" id="radarSaveStatus"></span>
+                        <button class="radar-save-btn primary" onclick="saveRadarNotes()">Save Notes</button>
+                    </div>
 
                     <div class="radar-legend">
                         <div class="legend-item">
@@ -3327,6 +3423,109 @@
                         Upcoming Stakeholder Meetings
                     </h3>
                     <div id="upcomingMeetingsList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Communications Tab - Email Activity & Follow-ups -->
+        <div class="tab-content" id="tab-comms">
+            <div class="comms-container" style="padding: 20px; max-width: 1600px; margin: 0 auto;">
+                <!-- Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <h2 style="color: var(--accent); margin: 0; font-size: 24px; display: flex; align-items: center; gap: 10px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                            Client Communications
+                        </h2>
+                        <p style="color: var(--text-muted); margin: 4px 0 0 0;">Track email activity and follow-up schedule</p>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-secondary" onclick="refreshCommsData()">Refresh</button>
+                        <select id="commsClientFilter" onchange="filterComms()" style="background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 16px; border-radius: 6px;">
+                            <option value="all">All Clients</option>
+                            <option value="OX2">OX2</option>
+                            <option value="Alinta">Alinta</option>
+                            <option value="ElectraNet">ElectraNet</option>
+                            <option value="Powerlink">Powerlink</option>
+                            <option value="Transgrid">Transgrid</option>
+                            <option value="Hallett">Hallett</option>
+                            <option value="AEMO">AEMO</option>
+                            <option value="Fortescue">Fortescue</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Horizontal Activity Timeline -->
+                <div class="comms-timeline-section" style="background: var(--bg-card); border-radius: 16px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--border);">
+                    <h3 style="color: var(--accent); font-size: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        Activity Timeline - Last 14 Days
+                    </h3>
+                    <div class="horizontal-timeline" id="activityTimeline" style="display: flex; gap: 4px; overflow-x: auto; padding: 16px 0;">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Follow-up Schedule - Horizontal Calendar -->
+                <div class="followup-schedule" style="background: var(--bg-card); border-radius: 16px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--border);">
+                    <h3 style="color: var(--warning); font-size: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                        Follow-up Schedule - Next 14 Days
+                    </h3>
+                    <div class="followup-timeline" id="followupTimeline" style="display: flex; gap: 4px; overflow-x: auto; padding: 12px 8px; background: var(--bg-secondary); border-radius: 12px;">
+                        <!-- 14 day forward view populated by JS -->
+                    </div>
+                    <div id="followupList" style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px;">
+                        <!-- Follow-up cards populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Recent Communications Table -->
+                <div class="comms-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <!-- Sent Emails -->
+                    <div style="background: var(--bg-card); border-radius: 16px; padding: 24px; border: 1px solid var(--border);">
+                        <h3 style="color: #17bf63; font-size: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                            Sent to Clients
+                        </h3>
+                        <div id="sentEmailsList" style="max-height: 400px; overflow-y: auto;">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Received Emails -->
+                    <div style="background: var(--bg-card); border-radius: 16px; padding: 24px; border: 1px solid var(--border);">
+                        <h3 style="color: #45b7d1; font-size: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                                <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+                            </svg>
+                            Received from Clients
+                        </h3>
+                        <div id="receivedEmailsList" style="max-height: 400px; overflow-y: auto;">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client Summary Cards -->
+                <div style="margin-top: 24px;">
+                    <h3 style="color: var(--text-primary); font-size: 16px; margin-bottom: 16px;">Client Activity Summary</h3>
+                    <div id="clientSummaryCards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
                         <!-- Populated by JavaScript -->
                     </div>
                 </div>
@@ -4172,10 +4371,18 @@
         const SUPABASE_URL = 'https://ekytcurxudovqqvabmyp.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_QHn_8yCwCGLaimiqoJk95A_Fhd55iP0';
 
-        // Initialize Supabase client
+        // Initialize Supabase client with session persistence
         let supabaseClient = null;
         if (window.supabase && window.supabase.createClient) {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                auth: {
+                    persistSession: true,
+                    storageKey: 'vysus-program-auth',
+                    storage: window.localStorage,
+                    autoRefreshToken: true,
+                    detectSessionInUrl: true
+                }
+            });
         }
 
         // Data source priority: Supabase > Daemon > localStorage
@@ -4548,6 +4755,56 @@
                     }
                 }
 
+                return { success: true, source: 'localStorage' };
+            },
+
+            // RADAR NOTES
+            async loadRadarNotes() {
+                // Try Supabase first
+                if (await this.isAvailable()) {
+                    try {
+                        const { data, error } = await supabaseClient
+                            .from('radar_notes')
+                            .select('*');
+                        if (!error && data) {
+                            const notes = {};
+                            data.forEach(row => { notes[row.client_code] = row.notes; });
+                            console.log('Loaded radar notes from Supabase');
+                            return notes;
+                        }
+                    } catch (e) {
+                        console.log('Supabase radar notes load failed:', e);
+                    }
+                }
+                // localStorage fallback
+                const saved = localStorage.getItem('radar_notes');
+                return saved ? JSON.parse(saved) : {};
+            },
+
+            async saveRadarNotes(notes) {
+                // Always save to localStorage
+                localStorage.setItem('radar_notes', JSON.stringify(notes));
+
+                // Try Supabase
+                if (await this.isAvailable()) {
+                    try {
+                        const user = await SupabaseAuth.getUser();
+                        for (const [client, noteText] of Object.entries(notes)) {
+                            await supabaseClient
+                                .from('radar_notes')
+                                .upsert({
+                                    client_code: client,
+                                    notes: noteText,
+                                    updated_by: user?.id || null,
+                                    updated_at: new Date().toISOString()
+                                }, { onConflict: 'client_code' });
+                        }
+                        SupabaseAuth.logAudit('update', 'radar_notes', null);
+                        return { success: true, source: 'supabase' };
+                    } catch (e) {
+                        console.log('Supabase radar notes save failed:', e);
+                    }
+                }
                 return { success: true, source: 'localStorage' };
             }
         };
@@ -6408,12 +6665,12 @@
             attachDropListeners();
         }
 
-        // Render GitHub-style activity cells for 2 weeks (10 working days)
+        // Render vertical daily allocation list for 2 weeks (10 working days)
         function renderActivityCells(project, staffName, totalHours) {
             const key = `${project}-${staffName}`;
             const allocation = dayAllocations[key] || {};
             const today = new Date();
-            let cells = '';
+            let rows = '';
 
             // Generate 10 working days (2 weeks)
             let dayCount = 0;
@@ -6424,19 +6681,20 @@
                 if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Skip weekends
                     const dateStr = currentDate.toISOString().split('T')[0];
                     const hours = allocation[dateStr] || 0;
-                    const level = hours === 0 ? 0 : hours <= 2 ? 1 : hours <= 4 ? 2 : hours <= 6 ? 3 : 4;
                     const dayName = currentDate.toLocaleDateString('en-AU', { weekday: 'short' });
                     const dateLabel = currentDate.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
+                    const hasHours = hours > 0 ? 'has-hours' : '';
 
-                    cells += `<div class="activity-cell level-${level}" data-date="${dateStr}" title="${dayName} ${dateLabel}: ${hours}h">
-                        <div class="activity-tooltip">${dayName} ${dateLabel}: ${hours}h</div>
+                    rows += `<div class="day-row" data-date="${dateStr}">
+                        <span class="day-label">${dayName} ${dateLabel}:</span>
+                        <span class="day-hours ${hasHours}">${hours}h</span>
                     </div>`;
                     dayCount++;
                 }
                 currentDate.setDate(currentDate.getDate() + 1);
             }
 
-            return cells;
+            return rows;
         }
 
         // Compact milestones for collapsed view
@@ -7029,6 +7287,43 @@
             document.getElementById('signUpSuccess').style.display = 'none';
         }
 
+        // ============================================
+        // RADAR NOTES UI FUNCTIONS
+        // ============================================
+        async function saveRadarNotes() {
+            const statusEl = document.getElementById('radarSaveStatus');
+            statusEl.textContent = 'Saving...';
+            statusEl.className = 'radar-save-status';
+
+            // Collect all notes from textareas
+            const notes = {};
+            document.querySelectorAll('.radar-notes-textarea').forEach(textarea => {
+                const client = textarea.dataset.client;
+                notes[client] = textarea.value;
+            });
+
+            const result = await SupabaseData.saveRadarNotes(notes);
+
+            if (result.success) {
+                statusEl.textContent = 'Saved to ' + result.source;
+                statusEl.className = 'radar-save-status success';
+                setTimeout(() => { statusEl.textContent = ''; }, 3000);
+            } else {
+                statusEl.textContent = 'Save failed';
+                statusEl.className = 'radar-save-status';
+            }
+        }
+
+        async function loadRadarNotes() {
+            const notes = await SupabaseData.loadRadarNotes();
+            document.querySelectorAll('.radar-notes-textarea').forEach(textarea => {
+                const client = textarea.dataset.client;
+                if (notes[client]) {
+                    textarea.value = notes[client];
+                }
+            });
+        }
+
         async function handleSupabaseLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -7148,6 +7443,9 @@
             drillScore = drillData.score;
             masteredContacts = new Set(drillData.mastered);
             updateDrillStats();
+
+            // Load radar notes
+            await loadRadarNotes();
         }
 
         // ============================================
