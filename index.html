@@ -2923,6 +2923,7 @@
             <button class="tab admin-tab" data-tab="stakeholders" onclick="switchTab('stakeholders')" style="display: none;">Stakeholders</button>
             <button class="tab" data-tab="comms" onclick="switchTab('comms')">Communications</button>
             <button class="tab" data-tab="research" onclick="switchTab('research')">Research</button>
+            <button class="tab" data-tab="contacts" onclick="switchTab('contacts')">Contacts</button>
             <button class="tab admin-tab" data-tab="drill" onclick="switchTab('drill')" style="display: none;">Drill</button>
             <button class="tab admin-tab" data-tab="calendar" onclick="switchTab('calendar')" style="display: none;">Calendar</button>
             <button class="tab admin-tab" data-tab="map" onclick="switchTab('map')" style="display: none;">Industry Map</button>
@@ -3122,6 +3123,45 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                <!-- Resource Summary -->
+                <div class="summary-card full-width">
+                    <h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        Resource Summary - Jan 2026
+                    </h3>
+                    <div class="focus-list">
+                        <div class="focus-item" style="border-left-color: var(--accent);">
+                            <div class="focus-content">
+                                <h4>Arif</h4>
+                                <p>New project starting Monday - expect slow ramp-up. Available to support Birdwood in interim. <strong>March leave planned.</strong></p>
+                            </div>
+                        </div>
+                        <div class="focus-item" style="border-left-color: var(--success);">
+                            <div class="focus-content">
+                                <h4>Owais</h4>
+                                <p>Hallett DD close to submission. Then back to Armidale. Available for Birdwood after Hallett clears - same inverter/PE model experience.</p>
+                            </div>
+                        </div>
+                        <div class="focus-item" style="border-left-color: var(--warning);">
+                            <div class="focus-content">
+                                <h4>Naveen</h4>
+                                <p>Clements Gap - 50 comments due by Friday. $30k variation raised (was $70k - training done).</p>
+                            </div>
+                        </div>
+                        <div class="focus-item" style="border-left-color: var(--info);">
+                            <div class="focus-content">
+                                <h4>Malaysia Team (Syafiq, Amani)</h4>
+                                <p>Available for PSS/E queries. Same region as Arif - good backup for Birdwood support.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -3778,7 +3818,7 @@
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0;"><strong>Dr. Momtaz Rahman</strong></td>
-                                    <td style="color: var(--text-muted);">Senior Engineer</td>
+                                    <td style="color: var(--text-muted);">Lead Engineer</td>
                                     <td><a href="mailto:md.momtazur.rahman@vysusgroup.com" style="color: var(--accent);">md.momtazur.rahman@vysusgroup.com</a></td>
                                 </tr>
                             </table>
@@ -3809,6 +3849,51 @@
                         <a href="https://asl.org.au/tenders/cis-tender-8-nem-dispatchable" target="_blank" style="color: var(--accent);">AEMO Services - Tender 8</a> ·
                         <a href="https://www.energy-storage.news/over-15gwh-of-energy-storage-successful-in-australias-capacity-investment-scheme-tender-3/" target="_blank" style="color: var(--accent);">Energy Storage News - Tender 3 Results</a>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contacts Tab - Client Contact Directory -->
+        <div class="tab-content" id="tab-contacts">
+            <div style="padding: 20px; max-width: 1400px; margin: 0 auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h2 style="color: var(--accent); margin: 0; font-size: 24px;">Client Contacts</h2>
+                        <p style="color: var(--text-muted); margin: 4px 0 0 0;">Directory of key contacts by client</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="contactSearchInput" placeholder="Search contacts..."
+                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); width: 200px;"
+                            oninput="filterContacts()">
+                        <select id="contactTypeFilter" onchange="filterContacts()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary);">
+                            <option value="all">All Types</option>
+                            <option value="Developer">Developers</option>
+                            <option value="NSP">NSPs</option>
+                            <option value="OEM">OEMs</option>
+                            <option value="EPC">EPCs</option>
+                            <option value="AEMO">AEMO</option>
+                            <option value="Investor">Investors</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="contactsTableContainer" style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: var(--bg-secondary); border-bottom: 1px solid var(--border);">
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase;">Emailed</th>
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase;">Name</th>
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase;">Company</th>
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase;">Type</th>
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase;">Role</th>
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase;">Active Projects</th>
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase;">Email</th>
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase;">Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactsTableBody">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -6771,6 +6856,80 @@
             renderProjects();
             renderCalendar();
             updateSummary();
+            renderContacts();
+        }
+
+        // Contact directory functions
+        let contactEmailStatus = JSON.parse(localStorage.getItem('contactEmailStatus') || '{}');
+
+        function renderContacts() {
+            const tbody = document.getElementById('contactsTableBody');
+            if (!tbody) return;
+
+            let html = '';
+            stakeholderClients.forEach(client => {
+                if (!client.contactInfo || client.contactInfo.length === 0) return;
+
+                client.contactInfo.forEach(contact => {
+                    const contactKey = `${client.code}-${contact.email}`;
+                    const isEmailed = contactEmailStatus[contactKey] || client.emailSent || false;
+                    const activeProjects = client.activeProjects ? client.activeProjects.map(p => getProjectName(p)).join(', ') : '-';
+
+                    html += `
+                        <tr class="contact-row" data-type="${client.type}" data-name="${contact.name}" data-company="${client.name}" style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 12px 16px;">
+                                <input type="checkbox" ${isEmailed ? 'checked' : ''} onchange="toggleContactEmailed('${contactKey}')" style="width: 18px; height: 18px; cursor: pointer;">
+                            </td>
+                            <td style="padding: 12px 16px; font-weight: 500; color: var(--text-primary);">${contact.name}</td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary);">${client.name}</td>
+                            <td style="padding: 12px 16px;">
+                                <span style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: ${getTypeColor(client.type)}20; color: ${getTypeColor(client.type)};">${client.type}</span>
+                            </td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary); font-size: 13px;">${contact.role || '-'}</td>
+                            <td style="padding: 12px 16px; color: var(--text-muted); font-size: 13px;">${activeProjects}</td>
+                            <td style="padding: 12px 16px;">
+                                ${contact.email ? `<a href="mailto:${contact.email}" style="color: var(--accent); text-decoration: none; font-size: 13px;">${contact.email}</a>` : '-'}
+                            </td>
+                            <td style="padding: 12px 16px; color: var(--text-secondary); font-size: 13px;">${contact.phone || '-'}</td>
+                        </tr>`;
+                });
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function toggleContactEmailed(contactKey) {
+            contactEmailStatus[contactKey] = !contactEmailStatus[contactKey];
+            localStorage.setItem('contactEmailStatus', JSON.stringify(contactEmailStatus));
+        }
+
+        function getTypeColor(type) {
+            const colors = {
+                'Developer': '#4ECDC4',
+                'NSP': '#FF6B6B',
+                'OEM': '#45B7D1',
+                'EPC': '#96CEB4',
+                'AEMO': '#FFEAA7',
+                'Investor': '#DDA0DD',
+                'Asset Owner': '#F7DC6F'
+            };
+            return colors[type] || '#00d4aa';
+        }
+
+        function filterContacts() {
+            const searchTerm = document.getElementById('contactSearchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('contactTypeFilter').value;
+
+            document.querySelectorAll('.contact-row').forEach(row => {
+                const name = row.dataset.name.toLowerCase();
+                const company = row.dataset.company.toLowerCase();
+                const type = row.dataset.type;
+
+                const matchesSearch = name.includes(searchTerm) || company.includes(searchTerm);
+                const matchesType = typeFilter === 'all' || type === typeFilter;
+
+                row.style.display = (matchesSearch && matchesType) ? '' : 'none';
+            });
         }
 
         function renderResourcePool() {
