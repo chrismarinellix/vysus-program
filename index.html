@@ -11,20 +11,27 @@
     <script src="comms.js" defer></script>
     <style>
         :root {
-            --bg-primary: #0f1419;
-            --bg-secondary: #1a2332;
-            --bg-card: #243447;
-            --bg-input: #1a2332;
-            --accent: #00d4aa;
-            --accent-dim: rgba(0, 212, 170, 0.15);
+            /* Vysus Brand Colors */
+            --vysus-stockholm-neon: #00E3A9;
+            --vysus-malmo-green: #005454;
+            --vysus-scandinavia-rock: #485559;
+            --vysus-trondheim-night: #1D1D1B;
+
+            /* Theme Colors */
+            --bg-primary: #0a1a1a;
+            --bg-secondary: #0f2a2a;
+            --bg-card: #153535;
+            --bg-input: #0f2a2a;
+            --accent: #00E3A9;
+            --accent-dim: rgba(0, 227, 169, 0.15);
             --text-primary: #e8eef4;
             --text-secondary: #8899a6;
             --text-muted: #657786;
-            --border: #38444d;
+            --border: #1a4040;
             --warning: #f5a623;
             --danger: #e0245e;
-            --success: #17bf63;
-            --radar-pulse: #00d4aa;
+            --success: #00E3A9;
+            --radar-pulse: #00E3A9;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -2900,14 +2907,11 @@
                 <div class="status-indicator">
                     <span class="status-dot" id="statusDot"></span>
                     <span id="syncStatus">Checking connection...</span>
-                    <button class="btn-start-daemon" id="startDaemonBtn" style="display: none;" onclick="startDaemon()">Start Daemon</button>
                 </div>
                 <div class="week-selector" id="weekSelectorContainer">
                     <span>Week:</span>
                     <input type="week" id="weekSelector">
                 </div>
-                <button class="btn btn-primary" onclick="saveAllocations()">Save</button>
-                <button class="btn btn-secondary" onclick="exportData()">Export</button>
             </div>
         </div>
 
@@ -2918,28 +2922,27 @@
             <button class="tab admin-tab" data-tab="radar" onclick="switchTab('radar')" style="display: none;">Sales Radar</button>
             <button class="tab admin-tab" data-tab="stakeholders" onclick="switchTab('stakeholders')" style="display: none;">Stakeholders</button>
             <button class="tab" data-tab="comms" onclick="switchTab('comms')">Communications</button>
+            <button class="tab" data-tab="research" onclick="switchTab('research')">Research</button>
             <button class="tab admin-tab" data-tab="drill" onclick="switchTab('drill')" style="display: none;">Drill</button>
             <button class="tab admin-tab" data-tab="calendar" onclick="switchTab('calendar')" style="display: none;">Calendar</button>
             <button class="tab admin-tab" data-tab="map" onclick="switchTab('map')" style="display: none;">Industry Map</button>
-            <!-- Admin Toggle -->
-            <button id="adminToggleBtn" class="admin-toggle" onclick="toggleAdminMode()" style="margin-left: auto; padding: 6px 12px; font-size: 11px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); cursor: pointer; display: none;" title="Toggle Admin Mode">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; vertical-align: middle;">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                </svg>
-            </button>
+            <!-- Admin Toggle - Pill Switch -->
+            <div id="adminToggleBtn" onclick="toggleAdminMode()" style="margin-left: auto; display: none; align-items: center; gap: 6px; cursor: pointer;" title="Toggle Admin Mode">
+                <span style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Admin</span>
+                <div id="adminTogglePill" style="width: 36px; height: 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; position: relative; transition: all 0.2s;">
+                    <div id="adminToggleBall" style="width: 14px; height: 14px; background: var(--text-muted); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: all 0.2s;"></div>
+                </div>
+            </div>
         </div>
 
         <!-- Admin Controls (hidden by default) -->
         <div id="adminControls" style="display: none; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;">
             <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Admin Controls</span>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Admin Mode Active</span>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span id="adminStatusIndicator" style="width: 8px; height: 8px; border-radius: 50%; background: #e0245e;"></span>
-                    <span id="adminStatusText" style="font-size: 12px; color: var(--text-secondary);">Promethean Light: Checking...</span>
+                    <span id="adminStatusIndicator" style="width: 8px; height: 8px; border-radius: 50%; background: #17bf63;"></span>
+                    <span id="adminStatusText" style="font-size: 12px; color: var(--text-secondary);">Connected to Supabase</span>
                 </div>
-                <button onclick="startDaemon()" style="padding: 4px 12px; font-size: 11px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); cursor: pointer;">Start Daemon</button>
-                <button onclick="checkConnection().then(updateAdminDaemonStatus)" style="padding: 4px 12px; font-size: 11px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); cursor: pointer;">Refresh Status</button>
             </div>
         </div>
 
@@ -3308,7 +3311,6 @@
                             <option value="name">Sort: Company</option>
                             <option value="meeting">Sort: Status</option>
                         </select>
-                        <button class="btn btn-primary" onclick="saveStakeholders()">Save</button>
                     </div>
                 </div>
                 <div class="stakeholder-grid" style="max-height: calc(100vh - 280px); overflow: auto;">
@@ -3494,6 +3496,191 @@
                     <h3 style="color: var(--text-primary); font-size: 16px; margin-bottom: 16px;">Client Activity Summary</h3>
                     <div id="clientSummaryCards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
                         <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Research Tab - Market Intelligence & Opportunities -->
+        <div class="tab-content" id="tab-research">
+            <div class="research-container" style="padding: 20px; max-width: 1600px; margin: 0 auto;">
+                <!-- Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <h2 style="color: var(--accent); margin: 0; font-size: 24px; display: flex; align-items: center; gap: 10px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="M21 21l-4.35-4.35"/>
+                            </svg>
+                            Market Research & Opportunities
+                        </h2>
+                        <p style="color: var(--text-muted); margin: 4px 0 0 0;">Intelligence on government schemes, tenders and client opportunities</p>
+                    </div>
+                    <span style="font-size: 11px; color: var(--text-muted);">Last updated: 7 Jan 2026</span>
+                </div>
+
+                <!-- CIS Tender 8 Section -->
+                <div style="background: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(0, 212, 170, 0.02)); border: 1px solid var(--accent); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <span style="background: var(--accent); color: var(--bg-primary); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase;">Active Tender</span>
+                        <h3 style="color: var(--text-primary); margin: 0; font-size: 20px;">Capacity Investment Scheme - Tender 8</h3>
+                    </div>
+
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px;">
+                        The CIS is the Australian Government's flagship renewable energy investment program, providing revenue underwriting for renewable energy and storage projects. Tender 8 specifically targets <strong style="color: var(--accent);">16 GWh of dispatchable energy storage</strong> in the NEM.
+                    </p>
+
+                    <!-- Key Dates -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                        <div style="background: rgba(245, 166, 35, 0.15); border: 1px solid rgba(245, 166, 35, 0.4); border-radius: 8px; padding: 16px;">
+                            <div style="color: #f5a623; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Registration Closes</div>
+                            <div style="color: var(--text-primary); font-size: 18px; font-weight: 600;">23 January 2026</div>
+                        </div>
+                        <div style="background: rgba(224, 36, 94, 0.15); border: 1px solid rgba(224, 36, 94, 0.4); border-radius: 8px; padding: 16px;">
+                            <div style="color: #e0245e; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Bids Due</div>
+                            <div style="color: var(--text-primary); font-size: 18px; font-weight: 600;">6 February 2026</div>
+                        </div>
+                        <div style="background: rgba(0, 212, 170, 0.15); border: 1px solid var(--accent); border-radius: 8px; padding: 16px;">
+                            <div style="color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Results Expected</div>
+                            <div style="color: var(--text-primary); font-size: 18px; font-weight: 600;">Mid-2026</div>
+                        </div>
+                    </div>
+
+                    <!-- Requirements -->
+                    <div style="background: var(--bg-secondary); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 12px;">Tender 8 Requirements</div>
+                        <ul style="color: var(--text-secondary); margin: 0; padding-left: 20px; line-height: 1.8;">
+                            <li>Minimum 4-hour storage duration</li>
+                            <li>Eligible: BESS, pumped hydro, compressed air storage</li>
+                            <li>Aggregate projects now eligible (5-30MW each)</li>
+                            <li>Single-stage tender process</li>
+                            <li>Standalone storage only (no hybrids)</li>
+                        </ul>
+                    </div>
+
+                    <a href="https://asl.org.au/tenders/cis-tender-8-nem-dispatchable" target="_blank" style="color: var(--accent); font-size: 13px;">View official tender details →</a>
+                </div>
+
+                <!-- Vysus Opportunity Section -->
+                <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <h3 style="color: var(--accent); margin: 0 0 16px 0; font-size: 18px;">💡 Vysus Opportunity</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+                        Projects winning CIS contracts get revenue certainty, making them more likely to proceed to construction. This drives demand for:
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+                        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
+                            <div style="color: var(--accent); font-weight: 600; margin-bottom: 8px;">Grid Connection Studies</div>
+                            <div style="color: var(--text-muted); font-size: 13px;">GPS compliance, power system modelling, AEMO/NSP liaison</div>
+                        </div>
+                        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
+                            <div style="color: var(--accent); font-weight: 600; margin-bottom: 8px;">Technical Due Diligence</div>
+                            <div style="color: var(--text-muted); font-size: 13px;">Investor support, technology assessment, risk analysis</div>
+                        </div>
+                        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
+                            <div style="color: var(--accent); font-weight: 600; margin-bottom: 8px;">Owner's Engineering</div>
+                            <div style="color: var(--text-muted); font-size: 13px;">EPC oversight, commissioning support, testing</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CIS Tender 3 Winners Section -->
+                <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <h3 style="color: var(--text-primary); margin: 0 0 16px 0; font-size: 18px;">Previous CIS Winners - Potential Clients</h3>
+                    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">Tender 3 awarded 4.13GW / 15.7GWh across 16 BESS projects. These companies are actively developing projects:</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                        <!-- NSW Projects -->
+                        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 600; color: #4a9eff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 8px; height: 8px; background: #4a9eff; border-radius: 50%;"></span>
+                                New South Wales (5 projects)
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+                                <div><strong>AMPYR Australia</strong> - Bulabul 2 BESS (406 MWh), Swallow Tail (1,218 MWh)</div>
+                                <div><strong>Equis</strong> - Calala BESS (300 MWh)</div>
+                                <div><strong>Lightsource BP</strong> - Goulburn River BESS (1,370 MWh)</div>
+                                <div><strong>EnergyAustralia</strong> - Mount Piper Stage 1 (1,000 MWh)</div>
+                            </div>
+                        </div>
+
+                        <!-- VIC Projects -->
+                        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 600; color: #9b59b6; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 8px; height: 8px; background: #9b59b6; border-radius: 50%;"></span>
+                                Victoria (5 projects)
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+                                <div><strong>Akaysha Energy</strong> - Deer Park BESS (1,100 MWh)</div>
+                                <div><strong>ACEnergy</strong> - Joel Joel (1,000 MWh), Little River (1,400 MWh)</div>
+                                <div><strong>TotalEnergies</strong> - Kiamal BESS (810 MWh)</div>
+                                <div><strong>Valent Energy</strong> - Mornington BESS (587 MWh)</div>
+                            </div>
+                        </div>
+
+                        <!-- QLD Projects -->
+                        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 600; color: #e74c3c; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 8px; height: 8px; background: #e74c3c; border-radius: 50%;"></span>
+                                Queensland (4 projects)
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+                                <div><strong>Potentia Energy</strong> - Capricorn BESS (1,200 MWh)</div>
+                                <div><strong>Atmos Renewables</strong> - Teebar BESS</div>
+                                <div><strong>EDP</strong> - Punch's Creek (1,600 MWh)</div>
+                            </div>
+                        </div>
+
+                        <!-- SA Projects -->
+                        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px;">
+                            <div style="font-weight: 600; color: #f39c12; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 8px; height: 8px; background: #f39c12; border-radius: 50%;"></span>
+                                South Australia (2 projects)
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+                                <div><strong>Alinta Energy</strong> - Reeves Plains BESS (1,000 MWh)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Developers to Target -->
+                <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <h3 style="color: var(--text-primary); margin: 0 0 16px 0; font-size: 18px;">🎯 Priority Targets for Outreach</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                        <div style="background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 212, 170, 0.05)); border: 1px solid var(--accent); border-radius: 8px; padding: 12px; text-align: center;">
+                            <div style="font-weight: 600; color: var(--text-primary);">Akaysha Energy</div>
+                            <div style="font-size: 11px; color: var(--accent);">2 projects, 1.88 GWh</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 212, 170, 0.05)); border: 1px solid var(--accent); border-radius: 8px; padding: 12px; text-align: center;">
+                            <div style="font-weight: 600; color: var(--text-primary);">ACEnergy</div>
+                            <div style="font-size: 11px; color: var(--accent);">2 projects, 2.4 GWh</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 212, 170, 0.05)); border: 1px solid var(--accent); border-radius: 8px; padding: 12px; text-align: center;">
+                            <div style="font-weight: 600; color: var(--text-primary);">AMPYR Australia</div>
+                            <div style="font-size: 11px; color: var(--accent);">2 projects, 1.6 GWh</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 212, 170, 0.05)); border: 1px solid var(--accent); border-radius: 8px; padding: 12px; text-align: center;">
+                            <div style="font-weight: 600; color: var(--text-primary);">Lightsource BP</div>
+                            <div style="font-size: 11px; color: var(--accent);">1.37 GWh BESS</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 212, 170, 0.05)); border: 1px solid var(--accent); border-radius: 8px; padding: 12px; text-align: center;">
+                            <div style="font-weight: 600; color: var(--text-primary);">EnergyAustralia</div>
+                            <div style="font-size: 11px; color: var(--accent);">Mt Piper 1 GWh</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 212, 170, 0.05)); border: 1px solid var(--accent); border-radius: 8px; padding: 12px; text-align: center;">
+                            <div style="font-weight: 600; color: var(--text-primary);">Alinta Energy</div>
+                            <div style="font-size: 11px; color: var(--accent);">Existing client ✓</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sources -->
+                <div style="background: var(--bg-card); border-radius: 8px; padding: 16px;">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Sources</div>
+                    <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.8;">
+                        <a href="https://www.dcceew.gov.au/energy/renewable/capacity-investment-scheme" target="_blank" style="color: var(--accent);">DCCEEW - Capacity Investment Scheme</a> ·
+                        <a href="https://asl.org.au/tenders/cis-tender-8-nem-dispatchable" target="_blank" style="color: var(--accent);">AEMO Services - Tender 8</a> ·
+                        <a href="https://www.energy-storage.news/over-15gwh-of-energy-storage-successful-in-australias-capacity-investment-scheme-tender-3/" target="_blank" style="color: var(--accent);">Energy Storage News - Tender 3 Results</a>
                     </div>
                 </div>
             </div>
@@ -7388,10 +7575,8 @@
             document.getElementById('userEmail').textContent = user.email;
             updateConnectionStatus();
 
-            // Show admin toggle for Vysus users
-            if (user.email && user.email.endsWith('@' + ALLOWED_DOMAIN)) {
-                showAdminToggle();
-            }
+            // Show admin toggle for all users (PIN protected)
+            showAdminToggle();
         }
 
         function hideApp() {
@@ -7725,42 +7910,48 @@
         // ADMIN MODE TOGGLE
         // =====================
         let adminModeActive = false;
+        const ADMIN_PIN = '5253';
 
         function toggleAdminMode() {
-            adminModeActive = !adminModeActive;
             const adminTabs = document.querySelectorAll('.admin-tab');
             const adminControls = document.getElementById('adminControls');
-            const toggleBtn = document.getElementById('adminToggleBtn');
+            const togglePill = document.getElementById('adminTogglePill');
+            const toggleBall = document.getElementById('adminToggleBall');
+
+            // If turning ON, require password
+            if (!adminModeActive) {
+                const pin = prompt('Enter admin PIN:');
+                if (pin !== ADMIN_PIN) {
+                    if (pin !== null) alert('Incorrect PIN');
+                    return;
+                }
+            }
+
+            adminModeActive = !adminModeActive;
 
             if (adminModeActive) {
                 // Show admin tabs
                 adminTabs.forEach(tab => tab.style.display = 'inline-block');
                 adminControls.style.display = 'block';
-                toggleBtn.innerHTML = `
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                    </svg>
-                    Admin Mode ON
-                `;
-                toggleBtn.style.background = 'rgba(0, 212, 170, 0.15)';
-                toggleBtn.style.borderColor = 'var(--accent)';
-                toggleBtn.style.color = 'var(--accent)';
 
-                // Update daemon status in admin controls
+                // Animate pill to ON state
+                togglePill.style.background = 'rgba(0, 212, 170, 0.3)';
+                togglePill.style.borderColor = 'var(--accent)';
+                toggleBall.style.background = '#00d4aa';
+                toggleBall.style.left = '18px';
+
+                // Update connection status
                 updateAdminDaemonStatus();
             } else {
                 // Hide admin tabs
                 adminTabs.forEach(tab => tab.style.display = 'none');
                 adminControls.style.display = 'none';
-                toggleBtn.innerHTML = `
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                    </svg>
-                    Admin
-                `;
-                toggleBtn.style.background = 'var(--bg-secondary)';
-                toggleBtn.style.borderColor = 'var(--border)';
-                toggleBtn.style.color = 'var(--text-muted)';
+
+                // Animate pill to OFF state
+                togglePill.style.background = 'var(--bg-card)';
+                togglePill.style.borderColor = 'var(--border)';
+                toggleBall.style.background = 'var(--text-muted)';
+                toggleBall.style.left = '2px';
 
                 // Switch back to summary tab if on an admin tab
                 const currentTab = document.querySelector('.tab.active');
@@ -7775,13 +7966,16 @@
             const statusText = document.getElementById('adminStatusText');
             if (!statusIndicator || !statusText) return;
 
-            const connected = await checkConnection();
-            if (connected) {
+            // Check Supabase connection status
+            if (dataSource === 'supabase') {
+                statusIndicator.style.background = '#17bf63';
+                statusText.textContent = 'Connected to Supabase';
+            } else if (dataSource === 'daemon') {
                 statusIndicator.style.background = '#00d4aa';
-                statusText.textContent = 'Promethean Light: Online';
+                statusText.textContent = 'Connected to Daemon';
             } else {
-                statusIndicator.style.background = '#e0245e';
-                statusText.textContent = 'Promethean Light: Offline';
+                statusIndicator.style.background = '#f5a623';
+                statusText.textContent = 'Offline (localStorage)';
             }
         }
 
