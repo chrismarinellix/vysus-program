@@ -7937,13 +7937,13 @@
             successEl.style.display = 'none';
 
             // Validate email
-            if (\!email) {
+            if (!email) {
                 errorEl.textContent = 'Please enter your email address';
                 errorEl.style.display = 'block';
                 return;
             }
 
-            if (\!email.endsWith('@vysusgroup.com')) {
+            if (!email.endsWith('@vysusgroup.com')) {
                 errorEl.textContent = 'Only @vysusgroup.com emails are allowed';
                 errorEl.style.display = 'block';
                 return;
@@ -7955,7 +7955,7 @@
                 errorEl.textContent = error.message || 'Failed to send reset email';
                 errorEl.style.display = 'block';
             } else {
-                successEl.textContent = 'Password reset link sent\! Check your email.';
+                successEl.textContent = 'Password reset link sent! Check your email.';
                 successEl.style.display = 'block';
                 document.getElementById('resetEmail').value = '';
             }
