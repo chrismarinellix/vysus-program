@@ -2860,19 +2860,23 @@
             <!-- Supabase Login Form -->
             <div id="loginForm">
                 <div id="supabaseStatus" style="font-size: 11px; margin-bottom: 12px; padding: 8px 12px; border-radius: 6px; text-align: center;"></div>
-                <input type="email" id="loginEmail" placeholder="Email (@vysusgroup.com)"
+                <input type="email" id="loginEmail" placeholder="Email (@vysusgroup.com)" onkeypress="if(event.key==='Enter'){document.getElementById('loginPassword').focus();}"
                     style="width: 100%; padding: 12px 16px; margin-bottom: 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px;">
-                <input type="password" id="loginPassword" placeholder="Password"
-                    style="width: 100%; padding: 12px 16px; margin-bottom: 16px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px;">
+                <input type="password" id="loginPassword" placeholder="Password" onkeypress="if(event.key==='Enter'){handleSupabaseLogin();}"
+                    style="width: 100%; padding: 12px 16px; margin-bottom: 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px;">
+                <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 13px; color: var(--text-secondary); cursor: pointer;">
+                    <input type="checkbox" id="rememberEmail" checked style="accent-color: var(--accent);">
+                    Remember my email
+                </label>
                 <div id="loginError" style="color: #e0245e; font-size: 13px; margin-bottom: 12px; display: none;"></div>
-                <button type="button" class="login-btn" onclick="handleSupabaseLogin()" style="width: 100%; margin-bottom: 12px;">
+                <button type="button" id="loginBtn" class="login-btn" onclick="handleSupabaseLogin()" style="width: 100%; margin-bottom: 12px;">
                     Sign In
                 </button>
                 <button type="button" class="login-btn" onclick="toggleSignUp()"
                     style="width: 100%; background: transparent; border: 1px solid var(--accent); color: var(--accent);">
                     Create Account
                 </button>
-                <a href="#" onclick="showResetPassword(); return false;" 
+                <a href="#" onclick="showResetPassword(); return false;"
                     style="display: block; text-align: center; margin-top: 16px; color: var(--text-secondary); font-size: 13px; text-decoration: none;">
                     Forgot Password?
                 </a>
@@ -4901,7 +4905,7 @@
             console.error('Supabase init error:', e);
         }
 
-        // Show Supabase status on login form
+        // Show Supabase status on login form and load remembered email
         setTimeout(() => {
             const statusEl = document.getElementById('supabaseStatus');
             if (statusEl) {
@@ -4915,6 +4919,14 @@
                     statusEl.style.color = '#e0245e';
                     statusEl.style.border = '1px solid rgba(224, 36, 94, 0.3)';
                     statusEl.textContent = 'Error: ' + (supabaseInitError || 'Supabase not loaded');
+                }
+            }
+            // Load remembered email
+            const remembered = localStorage.getItem('vysus_remembered_email');
+            if (remembered) {
+                const emailInput = document.getElementById('loginEmail');
+                if (emailInput) {
+                    emailInput.value = remembered;
                 }
             }
         }, 500);
@@ -7825,18 +7837,21 @@
 
         async function checkConnection() {
             const banner = document.getElementById('connectionBanner');
+            const statusDot = document.getElementById('statusDot');
+            const syncStatus = document.getElementById('syncStatus');
+            const startBtn = document.getElementById('startDaemonBtn');
             try {
                 const response = await fetch(`${API_BASE}/`, { method: 'GET', timeout: 2000 });
                 if (response.ok) {
-                    document.getElementById('statusDot').classList.remove('offline');
-                    document.getElementById('startDaemonBtn').style.display = 'none';
+                    if (statusDot) statusDot.classList.remove('offline');
+                    if (startBtn) startBtn.style.display = 'none';
                     if (banner) banner.classList.add('hidden');
                     return true;
                 }
             } catch (e) {
-                document.getElementById('statusDot').classList.add('offline');
-                document.getElementById('syncStatus').textContent = 'Offline - Daemon not running';
-                document.getElementById('startDaemonBtn').style.display = 'inline-block';
+                if (statusDot) statusDot.classList.add('offline');
+                if (syncStatus) syncStatus.textContent = 'Offline - Daemon not running';
+                if (startBtn) startBtn.style.display = 'inline-block';
                 if (banner) banner.classList.remove('hidden');
                 return false;
             }
@@ -8002,6 +8017,8 @@
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             const errorEl = document.getElementById('loginError');
+            const loginBtn = document.getElementById('loginBtn');
+            const rememberEmail = document.getElementById('rememberEmail')?.checked;
 
             // Basic validation
             if (!email || !password) {
@@ -8019,7 +8036,26 @@
 
             errorEl.style.display = 'none';
 
+            // Show loading state
+            if (loginBtn) {
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Signing in...';
+            }
+
+            // Remember email if checked
+            if (rememberEmail) {
+                localStorage.setItem('vysus_remembered_email', email);
+            } else {
+                localStorage.removeItem('vysus_remembered_email');
+            }
+
             const { data, error } = await SupabaseAuth.signIn(email, password);
+
+            // Reset button
+            if (loginBtn) {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
+            }
 
             if (error) {
                 errorEl.textContent = error.message || 'Login failed';
@@ -8028,6 +8064,21 @@
                 showApp({ email: data.user.email });
                 // Reload data from Supabase now that user is authenticated
                 await initializeData();
+            }
+        }
+
+        // Load remembered email on page load
+        function loadRememberedEmail() {
+            const remembered = localStorage.getItem('vysus_remembered_email');
+            if (remembered) {
+                const emailInput = document.getElementById('loginEmail');
+                if (emailInput) {
+                    emailInput.value = remembered;
+                    // Focus password field since email is pre-filled
+                    setTimeout(() => {
+                        document.getElementById('loginPassword')?.focus();
+                    }, 100);
+                }
             }
         }
 
