@@ -2871,6 +2871,25 @@
                     style="width: 100%; background: transparent; border: 1px solid var(--accent); color: var(--accent);">
                     Create Account
                 </button>
+                <a href="#" onclick="showResetPassword(); return false;" 
+                    style="display: block; text-align: center; margin-top: 16px; color: var(--text-secondary); font-size: 13px; text-decoration: none;">
+                    Forgot Password?
+                </a>
+            </div>
+
+            <!-- Password Reset Form (hidden by default) -->
+            <div id="resetPasswordForm" style="display: none;">
+                <input type="email" id="resetEmail" placeholder="Email (@vysusgroup.com)"
+                    style="width: 100%; padding: 12px 16px; margin-bottom: 16px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px;">
+                <div id="resetError" style="color: #e0245e; font-size: 13px; margin-bottom: 12px; display: none;"></div>
+                <div id="resetSuccess" style="color: #17bf63; font-size: 13px; margin-bottom: 12px; display: none;"></div>
+                <button type="button" class="login-btn" onclick="handlePasswordReset()" style="width: 100%; margin-bottom: 12px;">
+                    Send Reset Link
+                </button>
+                <button type="button" class="login-btn" onclick="hideResetPassword()"
+                    style="width: 100%; background: transparent; border: 1px solid var(--border); color: var(--text-secondary);">
+                    Back to Sign In
+                </button>
             </div>
 
             <!-- Sign Up Form (hidden by default) -->
@@ -3201,6 +3220,90 @@
                                 <div class="owner">Status: Received</div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Pre-Approval Proposals -->
+                <div class="summary-card full-width">
+                    <h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14,2 14,8 20,8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                        Pre-Approval Proposals
+                    </h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border);">
+                                    <th style="text-align: left; padding: 12px 8px; color: var(--text-muted); font-weight: 600;">Project</th>
+                                    <th style="text-align: left; padding: 12px 8px; color: var(--text-muted); font-weight: 600;">Client</th>
+                                    <th style="text-align: right; padding: 12px 8px; color: var(--text-muted); font-weight: 600;">Value (GBP)</th>
+                                    <th style="text-align: left; padding: 12px 8px; color: var(--text-muted); font-weight: 600;">Stage</th>
+                                    <th style="text-align: left; padding: 12px 8px; color: var(--text-muted); font-weight: 600;">Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--border);">
+                                    <td style="padding: 12px 8px; font-weight: 500;">Boomer Wind Farm & BESS</td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary);">Ark Energy</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--accent); font-weight: 600;">£383,412</td>
+                                    <td style="padding: 12px 8px;"><span style="background: var(--warning); color: var(--bg-primary); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">Proposal Clarification</span></td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">Delayed for OEM selection till 2026. Maintain relationship with Om Prakash</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border);">
+                                    <td style="padding: 12px 8px; font-weight: 500;">Mt Challenger WF & BESS</td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary);">Alinta Energy</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--accent); font-weight: 600;">£340,561</td>
+                                    <td style="padding: 12px 8px;"><span style="background: var(--success); color: var(--bg-primary); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">Proposal Shortlisted</span></td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">Was awaiting contract review, potential Dec kickoff - needs new owner</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border);">
+                                    <td style="padding: 12px 8px; font-weight: 500;">Sandy Creek SF & BESS</td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary);">Lightsource</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--accent); font-weight: 600;">£276,286</td>
+                                    <td style="padding: 12px 8px;"><span style="background: var(--warning); color: var(--bg-primary); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">Proposal Clarification</span></td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">Transitioned to Ed</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border);">
+                                    <td style="padding: 12px 8px; font-weight: 500;">Marulan Hybrid SF & BESS</td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary);">Elecnor</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--accent); font-weight: 600;">£265,972</td>
+                                    <td style="padding: 12px 8px;"><span style="background: var(--accent); color: var(--bg-primary); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">Proposal Submitted</span></td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">Target Jul 2026</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border);">
+                                    <td style="padding: 12px 8px; font-weight: 500;">Port Latta Wind Farm</td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary);">Aquila Capital</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--accent); font-weight: 600;">£149,478</td>
+                                    <td style="padding: 12px 8px;"><span style="background: var(--warning); color: var(--bg-primary); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">Proposal Clarification</span></td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">-</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border);">
+                                    <td style="padding: 12px 8px; font-weight: 500;">Philip Island BESS</td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary);">TEC-C Investments</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--accent); font-weight: 600;">£44,445</td>
+                                    <td style="padding: 12px 8px;"><span style="background: var(--warning); color: var(--bg-primary); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">Proposal Clarification</span></td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">$100K variation proposal outstanding</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border); opacity: 0.5;">
+                                    <td style="padding: 12px 8px; font-weight: 500; text-decoration: line-through;">Zenobe (Derringullen & Kiar)</td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary);">Zenobe</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--text-muted); font-weight: 600;">£597,913</td>
+                                    <td style="padding: 12px 8px;"><span style="background: var(--danger); color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">NOT PROCEEDING</span></td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">Client went quiet</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr style="border-top: 2px solid var(--border);">
+                                    <td colspan="2" style="padding: 12px 8px; font-weight: 700; color: var(--text-primary);">Active Pipeline Total</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--accent); font-weight: 700; font-size: 15px;">£1,460,154</td>
+                                    <td colspan="2" style="padding: 12px 8px; color: var(--text-muted); font-size: 11px;">(excludes Zenobe)</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -4817,6 +4920,14 @@
                 return { error };
             },
 
+            async resetPassword(email) {
+                if (!supabaseClient) return { error: 'Supabase not initialized' };
+                const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + window.location.pathname
+                });
+                return { data, error };
+            },
+
             async getUser() {
                 if (!supabaseClient) return null;
                 const { data: { user } } = await supabaseClient.auth.getUser();
@@ -5304,6 +5415,9 @@
             { code: 'AQUILA', name: 'Aquila Capital', type: 'Investor', activeProjects: [], completedProjects: ['Q6192'], emailSent: true, vysusPM: 'Dominic', contactInfo: [
                 { name: 'Damien Hegarty', role: 'Investment Manager', email: 'damien.hegarty@aquila-capital.com', phone: '' }
             ]},
+            { code: 'ARKENERGY', name: 'Ark Energy', type: 'Developer', activeProjects: ['Boomer WF & BESS'], completedProjects: [], vysusPM: 'Robby', contactInfo: [
+                { name: 'Om Prakash', role: 'General Manager - Grid & Power System', email: 'om.prakash@arkenergy.com.au', phone: '+61 455 213 766' }
+            ], hot: true, hotNote: 'Boomer WF - delayed for OEM selection till 2026. Procurement to reach out.' },
             { code: 'AUSNET', name: 'AusNet', type: 'NSP', activeProjects: ['Q6095'], completedProjects: [], emailSent: true, vysusPM: 'Hayden', contactInfo: [
                 { name: 'Zach Sun', role: 'Connections Engineer', email: 'zach.sun@ausnetservices.com.au', phone: '' },
                 { name: 'VSIR Compliance', role: 'Compliance Team', email: 'VSIRcompliance@ausnetservices.com.au', phone: '' }
@@ -7764,6 +7878,58 @@
             document.getElementById('loginError').style.display = 'none';
             document.getElementById('signUpError').style.display = 'none';
             document.getElementById('signUpSuccess').style.display = 'none';
+        }
+
+        function showResetPassword() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signUpForm').style.display = 'none';
+            document.getElementById('resetPasswordForm').style.display = 'block';
+            // Clear messages
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('resetError').style.display = 'none';
+            document.getElementById('resetSuccess').style.display = 'none';
+        }
+
+        function hideResetPassword() {
+            document.getElementById('resetPasswordForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            // Clear messages
+            document.getElementById('resetError').style.display = 'none';
+            document.getElementById('resetSuccess').style.display = 'none';
+        }
+
+        async function handlePasswordReset() {
+            const email = document.getElementById('resetEmail').value.trim();
+            const errorEl = document.getElementById('resetError');
+            const successEl = document.getElementById('resetSuccess');
+
+            // Clear previous messages
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            // Validate email
+            if (\!email) {
+                errorEl.textContent = 'Please enter your email address';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (\!email.endsWith('@vysusgroup.com')) {
+                errorEl.textContent = 'Only @vysusgroup.com emails are allowed';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const { data, error } = await SupabaseAuth.resetPassword(email);
+
+            if (error) {
+                errorEl.textContent = error.message || 'Failed to send reset email';
+                errorEl.style.display = 'block';
+            } else {
+                successEl.textContent = 'Password reset link sent\! Check your email.';
+                successEl.style.display = 'block';
+                document.getElementById('resetEmail').value = '';
+            }
         }
 
         // ============================================
