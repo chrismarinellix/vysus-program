@@ -6,7 +6,7 @@
     <title>Program View - Vysus Group</title>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/dist/umd/supabase.min.js"></script>
     <!-- Communications Tab -->
     <script src="comms.js" defer></script>
     <style>
@@ -4878,16 +4878,26 @@
 
         // Initialize Supabase client with session persistence
         let supabaseClient = null;
-        if (window.supabase && window.supabase.createClient) {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-                auth: {
-                    persistSession: true,
-                    storageKey: 'vysus-program-auth',
-                    storage: window.localStorage,
-                    autoRefreshToken: true,
-                    detectSessionInUrl: true
-                }
-            });
+        let supabaseInitError = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                    auth: {
+                        persistSession: true,
+                        storageKey: 'vysus-program-auth',
+                        storage: window.localStorage,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: true
+                    }
+                });
+                console.log('Supabase client initialized successfully');
+            } else {
+                supabaseInitError = 'Supabase library not loaded';
+                console.error('Supabase library not loaded - window.supabase:', window.supabase);
+            }
+        } catch (e) {
+            supabaseInitError = e.message;
+            console.error('Supabase init error:', e);
         }
 
         // Data source priority: Supabase > Daemon > localStorage
@@ -4898,14 +4908,14 @@
         // ============================================
         const SupabaseAuth = {
             async signIn(email, password) {
-                if (!supabaseClient) return { error: 'Supabase not initialized' };
+                if (!supabaseClient) return { error: { message: supabaseInitError || 'Supabase not initialized. Please refresh the page.' } };
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (!error) this.logAudit('login', null, null);
                 return { data, error };
             },
 
             async signUp(email, password, fullName) {
-                if (!supabaseClient) return { error: 'Supabase not initialized' };
+                if (!supabaseClient) return { error: { message: supabaseInitError || 'Supabase not initialized. Please refresh the page.' } };
                 const { data, error } = await supabaseClient.auth.signUp({
                     email,
                     password,
@@ -4921,7 +4931,7 @@
             },
 
             async resetPassword(email) {
-                if (!supabaseClient) return { error: 'Supabase not initialized' };
+                if (!supabaseClient) return { error: { message: supabaseInitError || 'Supabase not initialized. Please refresh the page.' } };
                 const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
                     redirectTo: window.location.origin + window.location.pathname
                 });
