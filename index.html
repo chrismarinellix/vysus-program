@@ -2859,6 +2859,7 @@
 
             <!-- Supabase Login Form -->
             <div id="loginForm">
+                <div id="supabaseStatus" style="font-size: 11px; margin-bottom: 12px; padding: 8px 12px; border-radius: 6px; text-align: center;"></div>
                 <input type="email" id="loginEmail" placeholder="Email (@vysusgroup.com)"
                     style="width: 100%; padding: 12px 16px; margin-bottom: 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px;">
                 <input type="password" id="loginPassword" placeholder="Password"
@@ -4899,6 +4900,24 @@
             supabaseInitError = e.message;
             console.error('Supabase init error:', e);
         }
+
+        // Show Supabase status on login form
+        setTimeout(() => {
+            const statusEl = document.getElementById('supabaseStatus');
+            if (statusEl) {
+                if (supabaseClient) {
+                    statusEl.style.background = 'rgba(23, 191, 99, 0.15)';
+                    statusEl.style.color = '#17bf63';
+                    statusEl.style.border = '1px solid rgba(23, 191, 99, 0.3)';
+                    statusEl.textContent = 'Connected to Supabase';
+                } else {
+                    statusEl.style.background = 'rgba(224, 36, 94, 0.15)';
+                    statusEl.style.color = '#e0245e';
+                    statusEl.style.border = '1px solid rgba(224, 36, 94, 0.3)';
+                    statusEl.textContent = 'Error: ' + (supabaseInitError || 'Supabase not loaded');
+                }
+            }
+        }, 500);
 
         // Data source priority: Supabase > Daemon > localStorage
         let dataSource = 'initializing';
