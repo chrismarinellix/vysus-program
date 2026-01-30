@@ -11,33 +11,42 @@
     <script src="comms.js" defer></script>
     <style>
         :root {
-            /* Vysus Brand Colors */
+            /* Vysus Brand Colors - Primary */
             --vysus-stockholm-neon: #00E3A9;
             --vysus-malmo-green: #005454;
+
+            /* Vysus Brand Colors - Neutrals */
+            --vysus-white: #FFFFFF;
+            --vysus-oslo-snow: #F8F8F8;
+            --vysus-stavanger-ice: #EDEDED;
+            --vysus-bergen-rain: #DADADA;
             --vysus-scandinavia-rock: #485559;
             --vysus-trondheim-night: #1D1D1B;
 
-            /* Theme Colors */
-            --bg-primary: #0a1a1a;
+            /* Theme Colors (Dark Mode using Vysus palette) */
+            --bg-primary: var(--vysus-trondheim-night);
             --bg-secondary: #0f2a2a;
             --bg-card: #153535;
             --bg-input: #0f2a2a;
-            --accent: #00E3A9;
+            --accent: var(--vysus-stockholm-neon);
             --accent-dim: rgba(0, 227, 169, 0.15);
             --text-primary: #e8eef4;
-            --text-secondary: #8899a6;
-            --text-muted: #657786;
+            --text-secondary: var(--vysus-bergen-rain);
+            --text-muted: var(--vysus-scandinavia-rock);
             --border: #1a4040;
             --warning: #f5a623;
             --danger: #e0245e;
-            --success: #00E3A9;
-            --radar-pulse: #00E3A9;
+            --success: var(--vysus-stockholm-neon);
+            --radar-pulse: var(--vysus-stockholm-neon);
+
+            /* Vysus Typography */
+            --font-primary: 'Segoe UI', Arial, sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: var(--font-primary), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
@@ -342,6 +351,24 @@
 
         .map-contact:hover .map-contact-tooltip {
             display: block;
+        }
+
+        .map-contact.has-opportunity::before {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--vysus-stockholm-neon);
+            border-radius: 50%;
+            animation: opportunityPulse 2s infinite;
+        }
+
+        @keyframes opportunityPulse {
+            0%, 100% { transform: translateY(-50%) scale(1); opacity: 1; }
+            50% { transform: translateY(-50%) scale(1.4); opacity: 0.6; }
         }
 
         .competitor-tag {
@@ -3010,25 +3037,32 @@
                         Upcoming Milestones
                     </h3>
                     <div style="display: flex; align-items: center; gap: 8px; padding: 16px; background: var(--bg-card); border-radius: 8px; overflow-x: auto;">
-                        <!-- Today -->
-                        <div style="flex-shrink: 0; text-align: center; padding: 12px 20px; background: var(--accent); border-radius: 8px;">
-                            <div style="font-size: 10px; color: var(--bg-primary); text-transform: uppercase; font-weight: 600;">Today</div>
-                            <div style="font-size: 13px; color: var(--bg-primary); font-weight: 600;">Alinta Kick-off</div>
-                            <div style="font-size: 10px; color: var(--bg-primary);">Meeting with Sam & Cedric</div>
+                        <!-- URGENT -->
+                        <div style="flex-shrink: 0; text-align: center; padding: 12px 20px; background: var(--danger); border-radius: 8px;">
+                            <div style="font-size: 10px; color: white; text-transform: uppercase; font-weight: 600;">URGENT</div>
+                            <div style="font-size: 13px; color: white; font-weight: 600;">OX2 Contract</div>
+                            <div style="font-size: 10px; color: white;">Sign NDA & Proposal ($50k)</div>
                         </div>
                         <div style="flex-shrink: 0; width: 40px; height: 2px; background: var(--border);"></div>
-                        <!-- Elencor Proposal -->
+                        <!-- Haughton -->
                         <div style="flex-shrink: 0; text-align: center; padding: 12px 20px; background: var(--warning); border-radius: 8px;">
-                            <div style="font-size: 10px; color: var(--bg-primary); text-transform: uppercase; font-weight: 600;">16 Jan</div>
-                            <div style="font-size: 13px; color: var(--bg-primary); font-weight: 600;">Elencor Proposal</div>
-                            <div style="font-size: 10px; color: var(--bg-primary);">Submission deadline</div>
+                            <div style="font-size: 10px; color: var(--bg-primary); text-transform: uppercase; font-weight: 600;">In Progress</div>
+                            <div style="font-size: 13px; color: var(--bg-primary); font-weight: 600;">Haughton TQ3</div>
+                            <div style="font-size: 10px; color: var(--bg-primary);">AEMO tracker response</div>
                         </div>
                         <div style="flex-shrink: 0; width: 40px; height: 2px; background: var(--border);"></div>
-                        <!-- 19 Jan -->
+                        <!-- Richmond Valley -->
+                        <div style="flex-shrink: 0; text-align: center; padding: 12px 20px; background: var(--accent); border-radius: 8px;">
+                            <div style="font-size: 10px; color: var(--bg-primary); text-transform: uppercase; font-weight: 600;">Proposal</div>
+                            <div style="font-size: 13px; color: var(--bg-primary); font-weight: 600;">Richmond Valley</div>
+                            <div style="font-size: 10px; color: var(--bg-primary);">Elecnor R1/R2 tender</div>
+                        </div>
+                        <div style="flex-shrink: 0; width: 40px; height: 2px; background: var(--border);"></div>
+                        <!-- Armidale -->
                         <div style="flex-shrink: 0; text-align: center; padding: 12px 20px; background: var(--bg-secondary); border: 2px solid var(--accent); border-radius: 8px;">
-                            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">19 Jan 2025</div>
-                            <div style="font-size: 13px; color: var(--accent); font-weight: 600;">Alinta</div>
-                            <div style="font-size: 10px; color: var(--text-secondary);">Submit Capacity Study</div>
+                            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Pending</div>
+                            <div style="font-size: 13px; color: var(--accent); font-weight: 600;">Armidale Var 9</div>
+                            <div style="font-size: 10px; color: var(--text-secondary);">Approval & budget reconcile</div>
                         </div>
                     </div>
                 </div>
@@ -3041,26 +3075,27 @@
                             <circle cx="12" cy="12" r="6"/>
                             <circle cx="12" cy="12" r="2"/>
                         </svg>
-                        Key Focus Areas - End of Year
+                        Key Focus Areas - January 2026
                     </h3>
                     <div class="focus-list">
                         <div class="focus-item priority-high">
                             <div class="focus-item-header">
-                                <div class="focus-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="12" y1="1" x2="12" y2="23"/>
-                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                <div class="focus-icon" style="background: rgba(224, 36, 94, 0.15);">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#e0245e" stroke-width="2">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                        <polyline points="22,4 12,14.01 9,11.01"/>
                                     </svg>
                                 </div>
-                                <div class="focus-content"><h4>RP Budget Management</h4></div>
+                                <div class="focus-content"><h4>OX2 Harmonic Assessment - CONTRACT WON</h4></div>
                             </div>
                             <div class="focus-content">
-                                <p>Renewed focus required. RPs must actively monitor and flag budget status in project meetings. Cannot afford budgets going significantly over.</p>
+                                <p><strong>$50,000 contract awarded!</strong> Action required: Sign NDA and approve proposal to activate.</p>
                                 <ul style="margin: 4px 0 0 16px; font-size: 11px; color: var(--text-secondary);">
-                                    <li>Review all project budgets</li>
-                                    <li>Flag overruns immediately</li>
-                                    <li>Contact clients on outstanding debits</li>
+                                    <li>Riverland Solar Energy (OX2 invoicing entity)</li>
+                                    <li>Contact: Alex Trieu (alex.trieu@ox2.com)</li>
+                                    <li>Technical: Naveenkumar Rajagopal coordinating</li>
                                 </ul>
+                                <div class="owner">Owner: Naveen | Status: AWAITING SIGNATURES</div>
                             </div>
                         </div>
 
@@ -3074,11 +3109,16 @@
                                         <line x1="16" y1="17" x2="8" y2="17"/>
                                     </svg>
                                 </div>
-                                <div class="focus-content"><h4>Hallett BESS Issues Tracker</h4></div>
+                                <div class="focus-content"><h4>Haughton BESS - TQ3 Response</h4></div>
                             </div>
                             <div class="focus-content">
-                                <p>Energy Australia (Lauri) seeking issues tracker response. 100-150 items to address. Critical before Christmas break.</p>
-                                <div class="owner">Owner: Naveen | Contact: Lauri</div>
+                                <p>Pacific Hydro TQ3 phase - AEMO issues tracker with Vysus comments submitted. Benchmarking issue resolution pending SMA response.</p>
+                                <ul style="margin: 4px 0 0 16px; font-size: 11px; color: var(--text-secondary);">
+                                    <li>PSSE RUG updates in progress</li>
+                                    <li>VCS updates being finalized</li>
+                                    <li>Reduced future background harmonics assessment pending SMA clarification</li>
+                                </ul>
+                                <div class="owner">Owner: Ajith | Contact: Pacific Hydro PM</div>
                             </div>
                         </div>
 
@@ -3091,12 +3131,53 @@
                                         <line x1="9" y1="21" x2="9" y2="9"/>
                                     </svg>
                                 </div>
-                                <div class="focus-content"><h4>Alinta / Mt Challenger</h4></div>
+                                <div class="focus-content"><h4>Richmond Valley Solar Farm & BESS</h4></div>
                             </div>
                             <div class="focus-content">
-                                <p>Finalising Ts&Cs for MRE BESS Studies. Close out contractual items before holiday period.</p>
-                                <p style="margin-top: 8px;"><strong>Arif Delivery:</strong> AGL Package A and RES Avonlie SF in progress.</p>
-                                <div class="owner">Owner: Chris M | Contact: Cedric Banda</div>
+                                <p>R1 and R2 Grid Connection Studies tender with Elecnor. Proposal phase - awaiting substation confirmation.</p>
+                                <ul style="margin: 4px 0 0 16px; font-size: 11px; color: var(--text-secondary);">
+                                    <li>Lead: Elecnor (Enrique Trabajo, Miguel Bordera)</li>
+                                    <li>Technical support: Vysus Group</li>
+                                </ul>
+                                <div class="owner">Owner: Chris M | Contact: Enrique Trabajo (etrabajo.atersa@elecnor.com)</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item priority-high">
+                            <div class="focus-item-header">
+                                <div class="focus-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="1" x2="12" y2="23"/>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>Armidale Budget & Variations</h4></div>
+                            </div>
+                            <div class="focus-content">
+                                <p>Variation 9 sent for approval. Georgetown variations signed. Budget reconciliation in progress.</p>
+                                <ul style="margin: 4px 0 0 16px; font-size: 11px; color: var(--text-secondary);">
+                                    <li>Review Variation 9 approval status</li>
+                                    <li>Budget position reconciliation needed</li>
+                                    <li>Billing summary updates required</li>
+                                </ul>
+                                <div class="owner">Owner: Chris M | Contact: Tony Morton</div>
+                            </div>
+                        </div>
+
+                        <div class="focus-item" style="border-color: var(--danger);">
+                            <div class="focus-item-header">
+                                <div class="focus-icon" style="background: rgba(224, 36, 94, 0.15);">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#e0245e" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="12" y1="8" x2="12" y2="12"/>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                    </svg>
+                                </div>
+                                <div class="focus-content"><h4>CRITICAL: Outstanding Invoice 69 Days Overdue</h4></div>
+                            </div>
+                            <div class="focus-content">
+                                <p><strong style="color: #e0245e;">Invoice 68011508 - URGENT payment follow-up required.</strong></p>
+                                <div class="owner">Status: CRITICAL - Immediate action needed</div>
                             </div>
                         </div>
 
@@ -3110,40 +3191,26 @@
                                 <div class="focus-content"><h4>Sales Focus</h4></div>
                             </div>
                             <div class="focus-content">
-                                <p>Continue sales push through holidays. Key prospects: Pacific Blue (2x BESS), Birdwood, Elgin.</p>
+                                <p>Key prospects: OX2 (contract won!), Pacific Blue (2x BESS), Birdwood, Elgin.</p>
                                 <div class="owner">See: Sales Radar Tab</div>
                             </div>
                         </div>
 
-                        <div class="focus-item" style="border-color: var(--success);">
+                        <div class="focus-item" style="border-color: var(--info);">
                             <div class="focus-item-header">
-                                <div class="focus-icon" style="background: rgba(23, 191, 99, 0.15);">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#17bf63" stroke-width="2">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                        <polyline points="22,4 12,14.01 9,11.01"/>
+                                <div class="focus-icon" style="background: rgba(69, 183, 209, 0.15);">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="#45b7d1" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                                     </svg>
                                 </div>
-                                <div class="focus-content"><h4>Sentinel Program Winner!</h4></div>
+                                <div class="focus-content"><h4>Recruitment - Power System Engineer</h4></div>
                             </div>
                             <div class="focus-content">
-                                <p>Winner announced! 10 entries with great ideas. Strong team engagement.</p>
-                                <div class="owner">Well done team!</div>
-                            </div>
-                        </div>
-
-                        <div class="focus-item" style="border-color: var(--success);">
-                            <div class="focus-item-header">
-                                <div class="focus-icon" style="background: rgba(23, 191, 99, 0.15);">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#17bf63" stroke-width="2">
-                                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-                                        <line x1="12" y1="18" x2="12.01" y2="18"/>
-                                    </svg>
-                                </div>
-                                <div class="focus-content"><h4>Capability Flyer Mobile</h4></div>
-                            </div>
-                            <div class="focus-content">
-                                <p>Now mobile responsive. Click button takes clients directly to studies section.</p>
-                                <div class="owner">Ready to share with clients</div>
+                                <p>Senior Power System Engineer role - interview phase. Candidate: Harikrishna Muda.</p>
+                                <div class="owner">Hiring Partner: Bluefin Resources (Rohan Mahal)</div>
                             </div>
                         </div>
 
@@ -3199,6 +3266,21 @@
                         Billing & Payments Update
                     </h3>
                     <div class="focus-list">
+                        <div class="focus-item" style="border-left-color: var(--danger);">
+                            <div class="focus-icon" style="background: rgba(224, 36, 94, 0.15);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#e0245e" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="12"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                            </div>
+                            <div class="focus-content">
+                                <h4>CRITICAL - Invoice 68011508 (69 Days Overdue)</h4>
+                                <p><strong style="color: #e0245e;">Immediate payment follow-up required.</strong> This has been flagged as critical.</p>
+                                <div class="owner">Status: OVERDUE - URGENT</div>
+                            </div>
+                        </div>
+
                         <div class="focus-item" style="border-left-color: var(--warning);">
                             <div class="focus-icon" style="background: rgba(245, 166, 35, 0.15);">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2">
@@ -3207,8 +3289,8 @@
                                 </svg>
                             </div>
                             <div class="focus-content">
-                                <h4>Birdwood - Payment Expected</h4>
-                                <p>Expected to pay before end of year. Follow up if not received by 20 Dec.</p>
+                                <h4>Design & Build Recruitment (INV-0476)</h4>
+                                <p>$14,231.25 AUD - Due 20 Feb 2026</p>
                                 <div class="owner">Status: Pending</div>
                             </div>
                         </div>
@@ -3220,9 +3302,9 @@
                                 </svg>
                             </div>
                             <div class="focus-content">
-                                <h4>Elgin - Invoice Paid</h4>
-                                <p>One invoice has been paid. Confirm receipt and update records.</p>
-                                <div class="owner">Status: Received</div>
+                                <h4>OX2 Harmonic Assessment Contract</h4>
+                                <p>$50,000 - New win! Invoicing via Riverland Solar Energy (OX2 entity)</p>
+                                <div class="owner">Status: Activate upon NDA signature</div>
                             </div>
                         </div>
                     </div>
@@ -3251,6 +3333,20 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr style="border-bottom: 1px solid var(--border); background: rgba(23, 191, 99, 0.1);">
+                                    <td style="padding: 12px 8px; font-weight: 500;">OX2 Harmonic Assessment</td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary);">OX2 (Riverland Solar)</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--success); font-weight: 600;">$50,000</td>
+                                    <td style="padding: 12px 8px;"><span style="background: var(--success); color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">CONTRACT WON</span></td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">NDA and proposal signature pending. Contact: Alex Trieu</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border);">
+                                    <td style="padding: 12px 8px; font-weight: 500;">Richmond Valley SF & BESS</td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary);">Elecnor</td>
+                                    <td style="padding: 12px 8px; text-align: right; color: var(--accent); font-weight: 600;">TBD</td>
+                                    <td style="padding: 12px 8px;"><span style="background: var(--accent); color: var(--bg-primary); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">Proposal Phase</span></td>
+                                    <td style="padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">R1 & R2 Grid Connection Studies tender. Contact: Enrique Trabajo</td>
+                                </tr>
                                 <tr style="border-bottom: 1px solid var(--border);">
                                     <td style="padding: 12px 8px; font-weight: 500;">Boomer Wind Farm & BESS</td>
                                     <td style="padding: 12px 8px; color: var(--text-secondary);">Ark Energy</td>
@@ -3316,9 +3412,58 @@
 
         <!-- Projects Tab Content -->
         <div class="tab-content" id="tab-projects">
-            <div class="resource-pool" id="resourcePool"></div>
-            <div class="projects-grid" id="projectsGrid"></div>
-            <div class="calendar-section" id="calendarSection"></div>
+            <div style="padding: 20px;">
+                <!-- Resource Pool (compact) -->
+                <div class="resource-pool" id="resourcePool" style="margin-bottom: 20px;"></div>
+
+                <!-- Projects Table Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2 style="color: var(--accent); font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        Active Projects
+                    </h2>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" id="projectSearchInput" placeholder="Search projects..."
+                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); width: 180px; font-size: 13px;"
+                            oninput="filterProjectsTable()">
+                        <select id="projectStatusFilter" onchange="filterProjectsTable()"
+                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font-size: 13px;">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="waiting">Waiting</option>
+                        </select>
+                        <button onclick="toggleProjectView()" class="btn btn-secondary" style="padding: 8px 12px; font-size: 12px;" title="Toggle View">
+                            <svg id="viewToggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+                                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Projects Table -->
+                <div id="projectsTable" style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: var(--bg-secondary); border-bottom: 2px solid var(--border);">
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-muted); font-size: 11px; text-transform: uppercase; width: 200px;">Project</th>
+                                <th style="padding: 12px 16px; text-align: center; font-weight: 600; color: var(--text-muted); font-size: 11px; text-transform: uppercase; width: 80px;">Hours</th>
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-muted); font-size: 11px; text-transform: uppercase; width: 200px;">Resources</th>
+                                <th style="padding: 12px 16px; text-align: center; font-weight: 600; color: var(--text-muted); font-size: 11px; text-transform: uppercase; width: 140px;">Status</th>
+                                <th style="padding: 12px 16px; text-align: center; font-weight: 600; color: var(--text-muted); font-size: 11px; text-transform: uppercase; width: 100px;">Due</th>
+                                <th style="padding: 12px 16px; text-align: left; font-weight: 600; color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectsTableBody">
+                            <!-- Populated by renderProjectsTable() -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Legacy grid for drag-drop (hidden by default) -->
+                <div class="projects-grid" id="projectsGrid" style="display: none;"></div>
+            </div>
         </div>
 
         <!-- Sales Radar Tab Content -->
@@ -3620,14 +3765,7 @@
                         <button class="btn btn-secondary" onclick="refreshCommsData()">Refresh</button>
                         <select id="commsClientFilter" onchange="filterComms()" style="background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 16px; border-radius: 6px;">
                             <option value="all">All Clients</option>
-                            <option value="OX2">OX2</option>
-                            <option value="Alinta">Alinta</option>
-                            <option value="ElectraNet">ElectraNet</option>
-                            <option value="Powerlink">Powerlink</option>
-                            <option value="Transgrid">Transgrid</option>
-                            <option value="Hallett">Hallett</option>
-                            <option value="AEMO">AEMO</option>
-                            <option value="Fortescue">Fortescue</option>
+                            <!-- Populated dynamically by comms.js -->
                         </select>
                     </div>
                 </div>
@@ -4261,7 +4399,7 @@
                                             <div style="color: var(--text-muted);">Global Head of Grid (Melbourne)</div>
                                         </div>
                                     </span>
-                                    <span class="map-contact" data-code="SMA">
+                                    <span class="map-contact has-opportunity" data-code="SMA">
                                         SMA
                                         <div class="map-contact-tooltip">
                                             <div style="font-weight: 600; color: var(--accent); margin-bottom: 6px;">SMA Solar Technology</div>
@@ -4309,7 +4447,7 @@
                                         <div style="color: #45b7d1; margin-top: 4px;">faisal.mohd@agl.com.au</div>
                                     </div>
                                 </span>
-                                <span class="map-contact" data-code="ARKENERGY">
+                                <span class="map-contact has-opportunity" data-code="ARKENERGY">
                                     Ark Energy
                                     <div class="map-contact-tooltip">
                                         <div style="font-weight: 600; color: var(--accent); margin-bottom: 6px;">Ark Energy</div>
@@ -4349,7 +4487,7 @@
                                     </div>
                                 </span>
                                 <span class="map-contact" data-code="RES">RES</span>
-                                <span class="map-contact" data-code="LSBP">LSBP</span>
+                                <span class="map-contact has-opportunity" data-code="LSBP">LSBP</span>
                                 <span class="map-contact" data-code="ELGIN">Elgin</span>
                                 <span class="map-contact" data-code="LEESON">Leeson</span>
                                 <span class="map-contact" data-code="ENERGAUST">
@@ -4416,7 +4554,7 @@
                                     Asset Owners (Post-COD)
                                 </div>
                                 <div style="font-size: 11px; color: var(--text-primary);">
-                                    <span class="map-contact" data-code="PACBLUE">
+                                    <span class="map-contact has-opportunity" data-code="PACBLUE">
                                         Pacific Blue
                                         <div class="map-contact-tooltip">
                                             <div style="font-weight: 600; color: var(--accent); margin-bottom: 6px;">Pacific Blue</div>
@@ -4480,7 +4618,7 @@
                                 AEMO
                             </div>
                             <div style="font-size: 11px; color: var(--text-primary); margin-bottom: 12px;">
-                                <span class="map-contact" data-code="AEMO" style="font-weight: 600;">
+                                <span class="map-contact has-opportunity" data-code="AEMO" style="font-weight: 600;">
                                     Australian Energy Market Operator
                                     <div class="map-contact-tooltip" style="min-width: 280px;">
                                         <div style="font-weight: 600; color: var(--accent); margin-bottom: 8px;">AEMO Key Contacts</div>
@@ -5494,10 +5632,12 @@
                 { name: 'VSIR Compliance', role: 'Compliance Team', email: 'VSIRcompliance@ausnetservices.com.au', phone: '' }
             ]},
             { code: 'BIRDWOOD', name: 'Birdwood', type: 'Developer', activeProjects: [], completedProjects: [], contactInfo: [], hot: true, hotNote: 'Grid connection project indicated - details TBC' },
-            { code: 'ELECNOR', name: 'Elecnor', type: 'EPC', activeProjects: [], completedProjects: ['Q5668'], emailSent: true, vysusPM: 'Syafiq', contactInfo: [
+            { code: 'ELECNOR', name: 'Elecnor', type: 'EPC', activeProjects: ['Richmond Valley SF & BESS'], completedProjects: ['Q5668'], emailSent: true, vysusPM: 'Chris M', contactInfo: [
                 { name: 'Enrique Trabajo', role: 'EPC Manager', email: 'etrabajo.atersa@elecnor.com', phone: '' },
+                { name: 'Miguel Bordera Calatayud', role: 'Project Director', email: '', phone: '' },
+                { name: 'Ezequiel Sandoval', role: 'Project Engineer', email: '', phone: '' },
                 { name: 'Alejandro Yazouri', role: 'Project Engineer', email: 'ayazouri@elecnor.com', phone: '' }
-            ]},
+            ], hot: true, hotNote: 'Richmond Valley R1/R2 Grid Connection Studies tender - proposal phase' },
             { code: 'GOLDWIND', name: 'Goldwind', type: 'OEM', activeProjects: ['Q6208'], completedProjects: [], emailSent: true, vysusPM: 'Ajith', contactInfo: [
                 { name: 'Andrew Bray', role: 'Technical Director', email: 'andrew.bray@goldwindaustralia.com', phone: '' },
                 { name: 'Phillip Wu', role: 'General Manager Grid', email: 'phillip.wu@goldwindaustralia.com', phone: '+61 3 8609 7000' }
@@ -5517,10 +5657,10 @@
                 { name: 'Rhys Albanese', role: 'Development Lead', email: 'rhys.albanese@tiltrenewables.com', phone: '' },
                 { name: 'Cameron Reid', role: 'Project Director', email: 'cameron.reid@tiltrenewables.com', phone: '' }
             ]},
-            { code: 'ALINTA', name: 'Alinta Energy', type: 'Developer', activeProjects: ['Q7193'], completedProjects: [], emailSent: true, vysusPM: 'Ajith', contactInfo: [
-                { name: 'Cedric Banda', role: 'Development Manager', email: 'cedric.banda@alintaenergy.com.au', phone: '0437 956 948' },
+            { code: 'ALINTA', name: 'Alinta Energy', type: 'Developer', activeProjects: ['Q7193', 'Mt Challenger WF+BESS'], completedProjects: [], emailSent: true, vysusPM: 'Chris M', contactInfo: [
+                { name: 'Cedric Banda', role: 'Development Manager', email: 'Cedric.Banda@alintaenergy.com.au', phone: '0437 956 948' },
                 { name: 'Sam Withers', role: 'Project Engineer', email: 'sam.withers@alintaenergy.com.au', phone: '' }
-            ]},
+            ], hot: true, hotNote: 'Mt Challenger WF+BESS active - contract shortlisted' },
             { code: 'GRANSOLAR', name: 'Gransolar', type: 'EPC', activeProjects: ['Q7150'], completedProjects: [], emailSent: true, vysusPM: 'Eduardo', contactInfo: [
                 { name: 'Sergio Argar', role: 'Project Manager', email: 'sergio.argar@gfrengineering.com', phone: '' }
             ]},
@@ -5576,6 +5716,20 @@
             { code: 'BLUEPP', name: 'Blue Power Partners', type: 'Recruiter', activeProjects: [], completedProjects: [], contactInfo: [
                 { name: 'Georgia Bowden', role: 'BESS Recruitment', email: 'gbo@bluepp.dk', phone: '' }
             ], hotNote: 'BESS talent network - industry intel' },
+            { code: 'OX2', name: 'OX2', type: 'Developer', activeProjects: ['OX2 Harmonic Assessment'], completedProjects: [], vysusPM: 'Naveen', contactInfo: [
+                { name: 'Alex Trieu', role: 'Project Lead', email: 'alex.trieu@ox2.com', phone: '' },
+                { name: 'Manoj Nepal', role: 'Technical Lead', email: 'manoj.nepal@ox2.com', phone: '' },
+                { name: 'Chris Smith', role: 'Project Engineer', email: 'chris.smith@ox2.com', phone: '' }
+            ], hot: true, hotNote: '$50k harmonic assessment contract WON - NDA and proposal signature pending' },
+            { code: 'PACHYDRO', name: 'Pacific Hydro', type: 'Developer', activeProjects: ['Haughton BESS'], completedProjects: [], vysusPM: 'Ajith', contactInfo: [
+                { name: 'Haughton PM', role: 'Project Manager', email: '', phone: '' }
+            ], hot: true, hotNote: 'Haughton BESS - TQ3 response phase - AEMO benchmarking issues tracker active' },
+            { code: 'OWC', name: 'OWC Ltd', type: 'Consultant', activeProjects: [], completedProjects: [], contactInfo: [
+                { name: 'Sharon Zhang', role: 'Grid Connection Partner', email: 'sharon.zhang@owcltd.com', phone: '' }
+            ], hotNote: 'Grid connection partner - collaboration opportunities' },
+            { code: 'BLUEFIN', name: 'Bluefin Resources', type: 'Recruiter', activeProjects: [], completedProjects: [], contactInfo: [
+                { name: 'Rohan Mahal', role: 'Recruitment Consultant', email: 'rohan.mahal@bluefinresources.com.au', phone: '' }
+            ], hotNote: 'Senior Power System Engineer recruitment - Harikrishna Muda candidate' },
         ];
 
         async function loadStakeholders() {
@@ -6016,6 +6170,7 @@
             if (tabName === 'projects') {
                 weekSelector.style.display = 'flex';
                 summaryPanel.style.display = 'flex';
+                renderProjectsTable();
             } else {
                 weekSelector.style.display = 'none';
                 summaryPanel.style.display = 'none';
@@ -6042,6 +6197,7 @@
             // Render industry map if switching to it
             if (tabName === 'map') {
                 renderStakeholderContactsGrid();
+                syncMapContactTooltips();
                 initFlashcards();
             }
 
@@ -6103,6 +6259,40 @@
             if (!grid) return;
             document.getElementById('flashcard-total').textContent = flashcardData.length;
             renderFlashcards();
+        }
+
+        // Sync map contact tooltips with stakeholderClients data
+        function syncMapContactTooltips() {
+            document.querySelectorAll('.map-contact[data-code]').forEach(el => {
+                const code = el.getAttribute('data-code');
+                const client = stakeholderClients.find(c => c.code === code);
+                if (!client || !client.contactInfo || client.contactInfo.length === 0) return;
+
+                // Check if tooltip already exists
+                let tooltip = el.querySelector('.map-contact-tooltip');
+                if (!tooltip) {
+                    tooltip = document.createElement('div');
+                    tooltip.className = 'map-contact-tooltip';
+                    el.appendChild(tooltip);
+                }
+
+                // Build tooltip content from stakeholderClients
+                const contact = client.contactInfo[0];
+                let tooltipHtml = `
+                    <div style="font-weight: 600; color: var(--accent); margin-bottom: 6px;">${client.name}</div>
+                    <div style="color: var(--text-primary);">${contact.name}</div>
+                    <div style="color: var(--text-muted);">${contact.role || ''}</div>
+                    ${contact.email ? `<div style="color: #45b7d1; margin-top: 4px;">${contact.email}</div>` : ''}
+                    ${contact.phone ? `<div style="color: var(--success);">📱 ${contact.phone}</div>` : ''}
+                `;
+
+                // Add opportunity indicator if hot
+                if (client.hot && client.hotNote) {
+                    tooltipHtml += `<div style="margin-top: 6px; font-size: 10px; color: var(--warning);">🔥 ${client.hotNote}</div>`;
+                }
+
+                tooltip.innerHTML = tooltipHtml;
+            });
         }
 
         function renderFlashcards() {
@@ -7078,6 +7268,7 @@
         function render() {
             renderResourcePool();
             renderProjects();
+            renderProjectsTable();
             renderCalendar();
             updateSummary();
             renderContacts();
@@ -7327,6 +7518,149 @@
 
             container.innerHTML = html;
             attachDropListeners();
+        }
+
+        // Render Projects Table (new horizontal layout)
+        function renderProjectsTable() {
+            const tbody = document.getElementById('projectsTableBody');
+            if (!tbody) return;
+
+            // Sort projects alphabetically
+            const sortedProjects = [...projects].sort((a, b) => a.localeCompare(b));
+            let html = '';
+
+            sortedProjects.forEach((project, idx) => {
+                const assignments = allocations[project] || [];
+                const totalHours = assignments.reduce((sum, a) => sum + a.hours, 0);
+                const status = projectStatus[project] || {};
+                const notes = projectNotes[project] || '';
+                const issues = projectIssues[project] || '';
+
+                // Determine status
+                const isWaiting = status.waitingClient || status.waitingNSP || status.waitingAEMO;
+                const isActive = assignments.length > 0 && !isWaiting;
+
+                // Status badges
+                let statusBadges = '';
+                if (status.waitingClient) statusBadges += '<span style="background: #f5a623; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 4px;">Client</span>';
+                if (status.waitingNSP) statusBadges += '<span style="background: #e74c3c; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 4px;">NSP</span>';
+                if (status.waitingAEMO) statusBadges += '<span style="background: #9b59b6; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 4px;">AEMO</span>';
+                if (isActive) statusBadges += '<span style="background: var(--vysus-stockholm-neon); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px;">Active</span>';
+                if (!statusBadges) statusBadges = '<span style="color: var(--text-muted); font-size: 10px;">-</span>';
+
+                // Resources list
+                const resourceList = assignments.length > 0
+                    ? assignments.map(a => {
+                        const color = staffColors[a.staffName] || '#00d4aa';
+                        return `<span style="display: inline-flex; align-items: center; margin-right: 8px; gap: 4px;">
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background: ${color};"></span>
+                            <span>${a.staffName.split(' ')[0]}</span>
+                            <span style="color: var(--text-muted);">${a.hours}h</span>
+                        </span>`;
+                      }).join('')
+                    : '<span style="color: var(--text-muted);">Unassigned</span>';
+
+                // Due date
+                const dueDate = status.expectedBy
+                    ? new Date(status.expectedBy).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })
+                    : '-';
+                const isOverdue = status.expectedBy && new Date(status.expectedBy) < new Date();
+
+                // Notes preview
+                const notesPreview = notes ? (notes.length > 50 ? notes.substring(0, 50) + '...' : notes) : '-';
+                const hasIssues = issues && issues.trim().length > 0;
+
+                const rowBg = idx % 2 === 0 ? 'var(--bg-card)' : 'var(--bg-secondary)';
+                const safeProject = project.replace(/'/g, "\\'");
+
+                html += `
+                    <tr data-project="${project}" style="background: ${rowBg}; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="expandProjectRow('${safeProject}')">
+                        <td style="padding: 12px 16px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-weight: 600; color: var(--text-primary);">${project}</span>
+                                ${hasIssues ? '<span style="color: var(--danger); font-size: 10px;" title="Has issues">!</span>' : ''}
+                            </div>
+                        </td>
+                        <td style="padding: 12px 16px; text-align: center;">
+                            <span style="background: ${totalHours > 0 ? 'var(--accent-dim)' : 'transparent'}; color: ${totalHours > 0 ? 'var(--accent)' : 'var(--text-muted)'}; padding: 4px 8px; border-radius: 4px; font-weight: 600;">${totalHours}h</span>
+                        </td>
+                        <td style="padding: 12px 16px;">${resourceList}</td>
+                        <td style="padding: 12px 16px; text-align: center;">${statusBadges}</td>
+                        <td style="padding: 12px 16px; text-align: center; ${isOverdue ? 'color: var(--danger);' : ''}">${dueDate}</td>
+                        <td style="padding: 12px 16px; color: var(--text-secondary); font-size: 12px;">${notesPreview}</td>
+                    </tr>`;
+            });
+
+            tbody.innerHTML = html || '<tr><td colspan="6" style="padding: 40px; text-align: center; color: var(--text-muted);">No projects found</td></tr>';
+        }
+
+        // Filter Projects Table
+        function filterProjectsTable() {
+            const searchInput = document.getElementById('projectSearchInput');
+            const statusFilter = document.getElementById('projectStatusFilter');
+            const tbody = document.getElementById('projectsTableBody');
+
+            if (!searchInput || !statusFilter || !tbody) return;
+
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusValue = statusFilter.value;
+
+            const rows = tbody.querySelectorAll('tr[data-project]');
+            rows.forEach(row => {
+                const project = row.getAttribute('data-project');
+                const assignments = allocations[project] || [];
+                const status = projectStatus[project] || {};
+                const isWaiting = status.waitingClient || status.waitingNSP || status.waitingAEMO;
+                const isActive = assignments.length > 0 && !isWaiting;
+
+                // Search match
+                const matchesSearch = !searchTerm || project.toLowerCase().includes(searchTerm);
+
+                // Status match
+                let matchesStatus = true;
+                if (statusValue === 'active') matchesStatus = isActive;
+                if (statusValue === 'waiting') matchesStatus = isWaiting;
+
+                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            });
+        }
+
+        // Expand project row to show details
+        function expandProjectRow(project) {
+            // Toggle to the legacy card view for editing
+            toggleProjectView('grid');
+            setTimeout(() => {
+                const projectCard = document.querySelector(`.project-card[data-project="${project}"]`);
+                if (projectCard) {
+                    projectCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    projectCard.style.boxShadow = '0 0 20px var(--accent)';
+                    setTimeout(() => projectCard.style.boxShadow = '', 2000);
+                }
+            }, 100);
+        }
+
+        // Toggle between table and grid view
+        let projectViewMode = 'table';
+        function toggleProjectView(forceMode) {
+            const tableEl = document.getElementById('projectsTable');
+            const gridEl = document.getElementById('projectsGrid');
+            const toggleIcon = document.getElementById('viewToggleIcon');
+
+            if (forceMode) {
+                projectViewMode = forceMode;
+            } else {
+                projectViewMode = projectViewMode === 'table' ? 'grid' : 'table';
+            }
+
+            if (projectViewMode === 'table') {
+                tableEl.style.display = 'block';
+                gridEl.style.display = 'none';
+                toggleIcon.innerHTML = '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>';
+            } else {
+                tableEl.style.display = 'none';
+                gridEl.style.display = 'grid';
+                toggleIcon.innerHTML = '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>';
+            }
         }
 
         // Render vertical daily allocation list for 2 weeks (10 working days)
@@ -8210,6 +8544,14 @@
         // SUPABASE AUTH STATE LISTENER
         // ============================================
         (async function initSupabaseAuth() {
+            // Auto-bypass login - direct access enabled
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('userEmail').textContent = 'chris.marinelli@vysusgroup.com';
+            showAdminToggle();
+            await initializeData();
+            return;
+
             // Auto-bypass for local development
             if (IS_LOCAL) {
                 document.getElementById('loginOverlay').classList.add('hidden');
